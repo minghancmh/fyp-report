@@ -1,0 +1,137 @@
+\chapter{Introduction}
+\section{Background}
+Automatic Speech Recognition (ASR) is a transformative technology that enables machines to interpret and process human speech into text. Rooted in advancements in machine learning, signal processing, and linguistics, ASR has rapidly evolved over the past decades to become a cornerstone of human-computer interaction. At its core, ASR has allowed for machines to understand, and reproduce human speech artificially (Panda, 2018). 
+
+The use cases for ASR span a wide range of real-time applications that significantly impact various industries. In customer service, ASR powers virtual assistants and chatbots, enabling real time transcription of customer queries and automated responses. Virtual assistants like Apple’s Siri, Amazon’s Alexa, Microsoft’s Cortana, and more also rely on ASR to process voice commands and execute tasks ranging from setting reminders to controlling smart home devices (Hoy, 2018). On our favourite video conferencing platforms such as Microsoft Teams, Zoom, or Google Meets, ASR is also integrated to provide live captions during meetings, enhancing collaboration and inclusivity (Qiao \& Yijun, 2023). These examples highlight how ASR has become an integral part of our daily lives, simplifying tasks, improving accessibility, and transforming how people interact with technology.  
+
+NTU SpeechLab has also undertaken multiple projects, creating speech engines that can transcribe English, Mandarin and Singlish in real-time. These speech engines are used in various use cases including speech-to-text at call centres, live transcription during interviews, as well as medical consultations. This is done through either of two methods based on the use. case. The first is batch transcription, in which a completed audio recording is analysed for transcription. The second is live transcription, in which an audio stream is analysed in real-time to provide on-the-fly transcription. 
+
+Due to the on-the-fly nature of live transcriptions, as well as the ever evolving need for ASR technologies, it is important for such applications to be built in a robust and scalable manner. These services should be highly available and scalable. Previous FYPs have also worked on containerisation and deployment of the ASR speech model via Kubernetes or Docker Swarm, as well as robust CI/CD pipelines using ArgoCD to speed up the build and deployment times the ASR speech application. 
+
+However, as the number of such applications have increased, the infrastructure requirements have also become more demanding. In the deployment of the ASR speech model, one of the greatest pain points was the amount of time and effort it took to learn cloud technologies, and ultimately deciding on the most suitable infrastructure to host the ASR application on the cloud. My mentors also shared that the DevOps portion of their work took up a sizeable amount of their time. As such, I noted the importance of a quick turnaround time for deploying a new project. Furthermore, with the industry moving toward containerisation, I noted the importance of ease of use of container orchestration software such as Kubernetes. As such, I decided on building a terminal tool to quickly spin up an Kubernetes cluster for a quick and easy deployment. 
+
+\section{Objective}
+The main objective of this project was to speed up the turnaround time for deployment of new ASR applications. The main idea of this tool is to abstract away in-depth knowledge of cloud technologies from researchers, and allow them to readily and easily deploy their ASR applications to the cloud at the press of a button. This will allow researchers to then concentrate their efforts on the development of the ML model in the ASR application, and not have to worry about low-level cloud implementation details such as creating a security group role to allow ingress/egress traffic, or configuring their local environment to hit the cluster.  
+
+Drawing inspiration from minikube, which is a quick way to spin up a local cluster, for this FYP, I have decided to build cloudkube, which quickly spins up a Kubernetes cluster in the  cloud. Users then have a simple barebones Kubernetes cluster hosted in the cloud where they can do dev testing. 
+
+The functional requirements for this project are detailed as follows:
+\vspace{-1em} % Adjust vertical space here
+\begin{enumerate}[label=\alph*., itemsep=0pt]
+    \item \texttt{cloudkube} should provision infrastructure such as compute instances, storage, networking, and Kubernetes clusters in the cloud.
+    \item \texttt{cloudkube} should be easily extendable to different cloud providers.
+    \item \texttt{cloudkube} should create a Kubernetes environment, including deploying essential components like ingress controllers.
+    \item \texttt{cloudkube} should allow users to easily deploy containerized ASR applications to the Kubernetes cluster.
+    \item \texttt{cloudkube} should be able to deprovision and clean up resources without leaving anything dangling to prevent unnecessary costs.
+    \item \texttt{cloudkube} should maintain the state of provisioned infrastructure to avoid dangling resources in the cloud.
+\end{enumerate}
+The non-functional requirements for this project are detailed as follows:
+\vspace{-1em} % Adjust vertical space as needed
+
+\begin{enumerate}[label=\alph*., itemsep=0pt]
+    \item \texttt{cloudkube} should be easy to use, and have a gentle learning curve.
+    \item \texttt{cloudkube} should be user-friendly, with clear command structures and help options.
+    \item \texttt{cloudkube}, the CLI tool, should provision resources and deploy applications within a reasonable time frame.
+    \item \texttt{cloudkube} should provision and deprovision resources idempotently and atomically.
+    \item \texttt{cloudkube} should be able to work across different environments, including Windows, MacOS, and Linux.
+    \item \texttt{cloudkube} should support the addition of new features or integrations.
+\end{enumerate}
+
+\section{Project Scope}
+
+The scope of this project is focused on building a minimum viable project for cloudkube, to provision infrastructure for hosting applications in a Kubernetes environment in the cloud. cloudkube aims to simplify the development process by automatic infrastructure provisioning, Kubernetes cluster setup, cloud configuration, as well as application deployment. While the potential of cloudkube is massive, with possibilities for features such as multi-cloud support, advanced monitoring integrations, extensibility of modules and an infrastructure templates, the scope of this project has been deliberately constrained due to the time frame of this FYP.  
+
+Given the limited time frame, this project focuses on delivering core functionalities, which are as follows:
+
+\vspace{-1em} % Adjust vertical space as needed
+
+\begin{enumerate}[label=\alph*., itemsep=0pt]
+    \item Efficiently spin up a Kubernetes cluster that applications can be easily deployed to.
+    \item Allow some customizability of the infrastructure:
+    \vspace{-0.5em}
+    \begin{enumerate}[label=\roman*., itemsep=0pt]
+        \item Architecture of compute instances.
+        \item Use of ingress controller.
+        \item Use of elastic file system for persistent volumes functionality in Kubernetes.
+    \end{enumerate}
+    \item State tracking to ensure idempotent and consistent behavior.
+    \item Configuration of local environment to communicate with the Kubernetes cluster.
+    \item Clean deprovisioning and tear down of resources.
+\end{enumerate}
+
+\section{Contributions}
+This section highlights the key contributions made during the course of this project. The key contributions to this project can be roughly broken down into two parts. The first and main part relates to the infrastructure provisioning, which allows for any containerised workload to be deployed to a Kubernetes cluster hosted on the AWS cloud. The second part relates to optimizing the deployment of the ASR application. 
+
+\textbf{Contributions toward Infrastructure Provisioning Workflow}
+\vspace{-1em}
+\begin{enumerate}[label=\alph*., itemsep=0pt]
+    \item \textbf{Optimized the workflow for creating Kubernetes clusters in the cloud:} In order to facilitate creating Kubernetes clusters in the cloud, I developed the \texttt{cloudkube} CLI tool to automate the provisioning of Kubernetes clusters, as well as their corresponding dependencies in the cloud..
+    \item \textbf{Creation of a user-friendly interface:} \texttt{cloudkube} was created with clear command structures and help options to ensure ease of use. As a tool aimed at developers who are not experts in cloud, \texttt{cloudkube} was built to abstract away in-depth cloud intricacies.
+    \item \textbf{Idempotency and Atomic Provisioning:} To align with the requirements stated above, \texttt{cloudkube} was also developed with state tracking, to ensure idempotent and atomic provisioning and deprovisioning of resources to prevent resource leaks and unnecessary costs.
+    \item \textbf{Easy user configurability:} After speaking to developers working on SpeechLab applications, and noting the use cases of different Kubernetes workloads, \texttt{cloudkube} provides customization options for infrastructure components such as compute instances, ingress controllers, and persistent volumes.
+    \item \textbf{Optimization of development workflow for authenticating local machine with Kubernetes cluster:} \texttt{cloudkube} also facilitates the configuration of local environments to communicate and authenticate seamlessly with the Kubernetes cluster.
+    \item \textbf{Extensive testing: } Extensive testing was also conducted to ensure the reliability and performance of the \texttt{cloudkube} tool. This included running multiple Kubernetes workloads against the provisioned cluster, which will be explained in detail in Chapter 4.
+\end{enumerate}
+
+\textbf{Contributions toward Optimizing ASR Kubernetes Deployment}
+\vspace{-1em}
+\begin{enumerate}[label=\alph*., itemsep=0pt]
+    \item \textbf{Optimized workflow for copying of models into compute worker instances:} The previous workflow for copying of the models into the EC2 worker instances was via secure copy \texttt{scp}. In this project, a more streamlined process was developed, and models were automatically pulled from cloud storage into compute instances (Song Yu, 2024).  
+\end{enumerate}
+\newpage
+\section{Project Schedule}
+The project schedule is presented in Table \ref{table:project_schedule}. A Gantt chart for the project schedule is shown in Figure \ref{fig:gantt_chart}. It should be noted that these start and end dates serve as rough guidelines, especially for the implementation phase of the project.
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|l|c|c|}
+\hline
+\textbf{Index} & \textbf{Task Name} & \textbf{Start Date} & \textbf{End Date} \\ \hline
+\multicolumn{4}{|c|}{\textbf{Preparation Phase}} \\ \hline
+1 & Literature Review & 31 May 2024 & 30 Jul 2024 \\ \hline
+2 & Requirements Analysis & 14 Jun 2024 & 15 Jul 2024 \\ \hline
+3 & Requirements Refinement & 15 Jul 2024 & 30 Jul 2024 \\ \hline
+4 & System Design Development and Refinement & 15 Jul 2024 & 30 Sept 2024 \\ \hline
+\multicolumn{4}{|c|}{\textbf{Implementation Phase}} \\ \hline
+5 & Optimizing ASR Kubernetes Deployment & 1 Oct 2024 & 7 Oct 2024 \\ \hline
+6 & Provisioning Infrastructure for ASR & 7 Oct 2024 & 9 Oct 2024 \\ \hline
+7 & Development of main CLI interface of \texttt{cloudkube} & 1 Oct 2024 & 31 Oct 2024 \\ \hline
+8 & Ingress Controller Implementation & 1 Nov 2024 & 15 Nov 2024 \\ \hline
+9 & Persistent Volumes Implementation & 15 Nov 2024 & 29 Nov 2024 \\ \hline
+10 & \texttt{cloudkube} interactive setup wizard & 15 Nov 2024 & 29 Nov 2024 \\ \hline
+11 & \texttt{cloudkube} commands setup & 2 Dec 2024 & 16 Dec 2024 \\ \hline
+\multicolumn{4}{|c|}{\textbf{Testing Phase}} \\ \hline
+12 & ASR Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
+13 & Multi Service Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
+\multicolumn{4}{|c|}{\textbf{Documentation Phase}} \\ \hline
+14 & Project Proposal & 12 Aug 2024 & 2 Sept 2024 \\ \hline
+15 & Interim Report & 16 Dec 2024 & 30 Jan 2025 \\ \hline
+16 & Final Report & 30 Jan 2025 & 24 Mar 2025 \\ \hline
+17 & Presentation & 24 Mar 2025 & 14 May 2025 \\ \hline
+\end{tabular}
+\caption{Project Schedule}
+\label{table:project_schedule}
+\end{table}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/gantt_chart.png}
+    \caption{Gantt Chart for Project Schedule}
+    \label{fig:gantt_chart}
+\end{figure}
+
+\section{Report Organisation}
+This report is structured into 5 different chapters, each detailing different aspects of the project.
+
+\textbf{Chapter 1 - Introduction: } This chapter presents the background and introduction of the project. In this chapter, I elucidate some of the motivations for this project, and a brief overview on the intended outcome of this project.
+
+\textbf{Chapter 2 - Literature Review: } This chapter reviews relevant technologies, and builds a foundational understanding for technical terminology used in future chapters. For completeness, this chapter will also discuss some of the pros and cons of each technology, which become relevant in later chapters.
+
+\textbf{Chapter 3 - Planning and Design: } This chapter focuses on the analysis and design of the proposed solutions. In this chapter, I explore the current methods for handling containerised workloads, and show an optimized workflow for my proposed application.
+
+\textbf{Chapter 4 - Implementation: } This chapter delves into the implementation of the proposed solutions. In this chapter, I detail the code and architecture used for \texttt{cloudkube}.
+
+\textbf{Chapter 5 - Results and Analysis: } This chapter discusses the results of my proposed application, \texttt{cloudkube}. In this chapter, we will see the deployment of two applications to a Kubernetes environment provisioned by \texttt{cloudkube} - \(1\) ASR Application, and \(2\) Multi-service Kubernetes Application.
+
+\textbf{Chapter 6 - Conclusion and Future Work: } This chapter presents the conclusions and recommendations for future work. 
