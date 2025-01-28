@@ -245,6 +245,42 @@
       \verb https://developer.hashicorp.com/terraform/cli/commands
       \endverb
     \endentry
+    \entry{hoy-2018}{article}{}
+      \name{author}{1}{}{%
+        {{hash=3153dbf93c11ed5fe20965c6a9149165}{%
+           family={Hoy},
+           familyi={H\bibinitperiod},
+           given={Matthew\bibnamedelima B.},
+           giveni={M\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{3153dbf93c11ed5fe20965c6a9149165}
+      \strng{fullhash}{3153dbf93c11ed5fe20965c6a9149165}
+      \strng{bibnamehash}{3153dbf93c11ed5fe20965c6a9149165}
+      \strng{authorbibnamehash}{3153dbf93c11ed5fe20965c6a9149165}
+      \strng{authornamehash}{3153dbf93c11ed5fe20965c6a9149165}
+      \strng{authorfullhash}{3153dbf93c11ed5fe20965c6a9149165}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Medical Reference Services Quarterly}
+      \field{month}{1}
+      \field{number}{1}
+      \field{title}{{Alexa, Siri, Cortana, and more: An introduction to voice assistants}}
+      \field{volume}{37}
+      \field{year}{2018}
+      \field{pages}{81\bibrangedash 88}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1080/02763869.2018.1404391
+      \endverb
+      \verb{urlraw}
+      \verb https://pubmed.ncbi.nlm.nih.gov/29327988/
+      \endverb
+      \verb{url}
+      \verb https://pubmed.ncbi.nlm.nih.gov/29327988/
+      \endverb
+    \endentry
     \entry{kubernetes-docs}{misc}{}
       \name{author}{1}{}{%
         {{hash=30136395f01879792198317c11831ea4}{%
@@ -337,6 +373,75 @@
       \verb https://terraspace.cloud/docs/vs/terragrunt/
       \endverb
     \endentry
+    \entry{panda-2017}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=fbc1c598f15f2503dc41aa843c4d5058}{%
+           family={Panda},
+           familyi={P\bibinitperiod},
+           given={Soumya\bibnamedelima Priyadarsini},
+           giveni={S\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \strng{fullhash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \strng{bibnamehash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \strng{authorbibnamehash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \strng{authornamehash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \strng{authorfullhash}{fbc1c598f15f2503dc41aa843c4d5058}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{7}
+      \field{title}{{Automated speech recognition system in advancement of human-computer interaction}}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://ieeexplore.ieee.org/document/8282696
+      \endverb
+      \verb{url}
+      \verb https://ieeexplore.ieee.org/document/8282696
+      \endverb
+    \endentry
+    \entry{qiao-2023}{article}{}
+      \name{author}{2}{}{%
+        {{hash=d9f0c518dca77ff4eb65c21e676393b5}{%
+           family={Qiao},
+           familyi={Q\bibinitperiod},
+           given={Wang},
+           giveni={W\bibinitperiod}}}%
+        {{hash=7c6614253d18c9adef3c6a5e32b4b719}{%
+           family={Yijun},
+           familyi={Y\bibinitperiod},
+           given={Chen},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{950aed277bf37206269c3a7fad675760}
+      \strng{fullhash}{950aed277bf37206269c3a7fad675760}
+      \strng{bibnamehash}{950aed277bf37206269c3a7fad675760}
+      \strng{authorbibnamehash}{950aed277bf37206269c3a7fad675760}
+      \strng{authornamehash}{950aed277bf37206269c3a7fad675760}
+      \strng{authorfullhash}{950aed277bf37206269c3a7fad675760}
+      \field{sortinit}{Q}
+      \field{sortinithash}{ce69a400a872ddd02ee7fdb3b38c6abd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Education and Information Technologies}
+      \field{month}{4}
+      \field{number}{11}
+      \field{title}{{The role of live transcripts in synchronous online L2 classrooms: Learning outcomes and learner perceptions}}
+      \field{volume}{28}
+      \field{year}{2023}
+      \field{pages}{14783\bibrangedash 14804}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1007/s10639-023-11784-8
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s10639-023-11784-8
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s10639-023-11784-8
+      \endverb
+    \endentry
     \entry{rgs-2023}{misc}{}
       \name{author}{1}{}{%
         {{hash=fd042821be665eb38e95182de94a750d}{%
@@ -362,6 +467,28 @@
       \verb{url}
       \verb https://ranchergovernment.com/news/cloud-computing-trends-toward-containerization
       \endverb
+    \endentry
+    \entry{song-yu-2023}{report}{}
+      \name{author}{1}{}{%
+        {{hash=72cb6b05628abcf9e2777a3416a5ca90}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Song},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \strng{fullhash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \strng{bibnamehash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \strng{authorbibnamehash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \strng{authornamehash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \strng{authorfullhash}{72cb6b05628abcf9e2777a3416a5ca90}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Deploying speech recognition system using Kubernetes cluster infrastructure as code with terraform and terragrunt}}
+      \field{type}{techreport}
+      \field{year}{2023}
     \endentry
   \enddatalist
 \endrefsection

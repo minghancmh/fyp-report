@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.24)  29 JAN 2025 00:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.24)  29 JAN 2025 01:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1333,7 +1333,7 @@ Underfull \hbox (badness 2635) in paragraph at lines 21--22
  []
 
 [2] [3] [4]
-<fig/gantt_chart.png, id=298, 1848.9075pt x 619.31375pt>
+<fig/gantt_chart.png, id=307, 1848.9075pt x 619.31375pt>
 File: fig/gantt_chart.png Graphic file (type png)
 <use fig/gantt_chart.png>
 Package pdftex.def Info: fig/gantt_chart.png  used on input line 119.
@@ -1369,7 +1369,7 @@ Underfull \hbox (badness 1867) in paragraph at lines 52--53
  []
 
 [8]
-<fig/typical-tf-backend.png, id=345, 412.54124pt x 412.54124pt>
+<fig/typical-tf-backend.png, id=353, 412.54124pt x 412.54124pt>
 File: fig/typical-tf-backend.png Graphic file (type png)
 <use fig/typical-tf-backend.png>
 Package pdftex.def Info: fig/typical-tf-backend.png  used on input line 57.
@@ -1385,7 +1385,7 @@ Underfull \hbox (badness 1596) in paragraph at lines 93--94
  []
 
 [11]
-<fig/kubernetes-cluster-architecture.png, id=378, 952.55875pt x 601.24625pt>
+<fig/kubernetes-cluster-architecture.png, id=386, 952.55875pt x 601.24625pt>
 File: fig/kubernetes-cluster-architecture.png Graphic file (type png)
 <use fig/kubernetes-cluster-architecture.png>
 Package pdftex.def Info: fig/kubernetes-cluster-architecture.png  used on input line 107.
@@ -1458,10 +1458,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 40879 strings out of 476025
- 815391 string characters out of 5790017
+ 40890 strings out of 476025
+ 815701 string characters out of 5790017
  1940388 words of memory out of 5000000
- 60184 multiletter control sequences out of 15000+600000
+ 60191 multiletter control sequences out of 15000+600000
  540756 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  110i,12n,106p,1173b,2439s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1507,11 +1507,23 @@ pdfTeX warning (dest): name{cite.0@cloud-2023} has been referenced but does not 
 
 pdfTeX warning (dest): name{cite.0@aws-iac} has been referenced but does not exist, replaced by a fixed one
 
+
+pdfTeX warning (dest): name{cite.0@song-yu-2023} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{cite.0@qiao-2023} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{cite.0@hoy-2018} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{cite.0@panda-2017} has been referenced but does not exist, replaced by a fixed one
+
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (34 pages, 707589 bytes).
+Output written on main.pdf (34 pages, 707233 bytes).
 PDF statistics:
- 907 PDF objects out of 1000 (max. 8388607)
- 840 compressed objects within 9 object streams
- 451 named destinations out of 1000 (max. 500000)
+ 915 PDF objects out of 1000 (max. 8388607)
+ 848 compressed objects within 9 object streams
+ 455 named destinations out of 1000 (max. 500000)
  353 words of extra memory for PDF output out of 10000 (max. 10000000)
 
