@@ -1,0 +1,17 @@
+\chapter{Appendix B: VPC Requirements for EKS Cluster in AWS}
+\label{appendix:eks-vpc-requirements}
+
+The following are the VPC requirements for deploying an EKS Cluster in AWS.
+\vspace{-1em}
+\begin{enumerate}
+    \item The VPC must have sufficient IP addresses for the cluster, any nodes, and Kubernetes resources that are created.
+    \item If IPv6 is used by Kubernetes, then IPv6 CIDR blocks must be associated with the VPC and corresponding subnets.
+    \item The VPC must have DNS hostname and DNS resolution support.
+    \item The subnets must have at least six IP addresses for use by EKS.
+    \item The subnets must be in at least two AZs.
+    \item If inbound access is required from internet to pods, then there needs to be at least 1 public subnet with enough available IP addresses to deploy load balancers and ingresses to. 
+    
+\end{enumerate}
+
+
+

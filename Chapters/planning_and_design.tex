@@ -1,3 +1,192 @@
 \chapter{Planning and Design}
+With the rapid adoption of containerisation technologies, organizations are increasingly turning to containers for their scalability, portability, and efficiency in deploying modern applications \cite{gartner-2024}. This shift has prompted cloud providers to develop managed container solutions, simplifying the orchestration of containerized workloads. 
+
+In this chapter, we will detail the current approach taken in deploying a containerized application to the cloud platform. We will then analyse some of its pitfalls, and show how the proposed solution, \texttt{cloudkube}, aims to solve, and alleviate some of these issues. Mainly, each of these subsections will detail the number of steps it takes to get a working container management system up and running, as well as the amount of configuration required. We will then see the much quicker development workflow that \texttt{cloudkube} offers.
+
 \section{Traditional Approaches}
-This section explores existing solutions like AWS ECS...
+Within the AWS ecosystem, there are two primary services offering container orchestration solutions. They are the AWS Elastic Container Service (ECS), as well as a managed Kubernetes service, the AWS Elastic Kubernetes Service (EKS). With 96\% of companies who use containerisation in production opting for Kubernetes for container orchestration \cite{unlu-2024}, this report will mainly focus on deploying a containerized workload on Kubernetes. That said, AWS ECS will be included in our analysis for completeness. 
+
+\subsection{AWS Elastic Container Service (ECS)}
+AWS ECS is a fully managed container orchestration service that helps you to deploy, manage, and scale containerised applications. AWS ECS allows for the running and scaling of container workloads across AWS regions in the cloud, without the complexity of managing a control plane \cite{aws-ecs}. 
+
+\textbf{\textit{Workflow for Deploying a containerized application to ECS}}
+
+\begin{enumerate}
+    \vspace{-1em}
+\item Create a Virtual Private Cloud (VPC)
+    \begin{enumerate}
+        \item VPCs are used to launch AWS resources into a user-defined virtual network. They serve as the foundational network infrastructure to deploy cloud resources. In the creation of our VPC, multiple factors need to be considered, including the CIDR blocks, subnet configurations, as well as Availability Zones.
+        \item By default, the VPC supports IPv4 traffic, though IPv6 traffic can be optionally enabled. Users must also decide on tenancy options, which dictate whether resources share hardware with other accounts or if their resources have dedicated access to hardware.
+        \item Subnets, essential for segmenting resources, must also be carefully designed. Public subnets provide direct access to the public internet, and must be configured with an Internet Gateway. On the other hand, private subnets are typically used to access and host internal resources such as databases, and must be configured with a NAT or Egress only Internet Gateways in order to access the public internet. 
+    \end{enumerate}
+\item Configure Security groups and network ACLs  
+    \begin{enumerate}
+        \item Ensuring robust security control is essential when deploying containerised applications. AWS offers two access control mechanisms, namely Security Groups, and Access Control Lists.
+        \item Security Groups operate at the resource level, managing inbound and outbound traffic for associated resources, such as EC2 instances. They operate at the instance level, and is stateful, meaning that all return traffic is allowed, regardless of rules. If container instances are launched in multiple regions, then developers need to create a security group in each region, and associate it with the corresponding resource. 
+        \item On the other hand, Network Access Control Lists allow or deny inbound and outbound traffic at the subnet / network level. These can be used as an additional layer of security, and are stateless, meaning that return traffic must be explicitly allowed by the rules. 
+    \end{enumerate}
+
+\item Decide between Fargate (Serverless) or EC2 Instances
+    \begin{enumerate}
+        \item Developers also need to make an important decision between using AWS Fargate, a serverless option, or EC2 instances, for compute. AWS Fargate allows a way for containers to be run directly, without any virtual machines, or servers to think about. AWS Fargate is a much more managed solution, and automatically manages upgrades and out of date dependencies, but are slightly more expensive than EC2 instances at high utilization \cite{peck-2023}. On the other hand, EC2 instances allow the system administration more control over the instances in the cluster.  This means that the system administrator has more oversight on maintaining the cluster and optimizing it. 
+    \end{enumerate}
+\item Preparing and pushing the container image
+    \begin{enumerate}
+        \item AWS ECS task definitions used Docker images to launch containers on the container instances in the cluster. Assuming we have a ready and runnable image on our local computer, we need to push this image to a container registry. This can be something like AWS Elastic Container Registry (ECR), or Dockerhub. 
+    \end{enumerate}
+\item Create a task
+    \begin{enumerate}
+    \item Create a task definition, which specifies the Docker image to use for the containers, how many containers to use in a task, as well as the resource allocation for each container.  
+    \item Next, we need to create a service using the task definition, and attach the security group created previously to this service. It is only at this point, with much manual configuration, that our containerised application is deployed to AWS ECS.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{AWS Elastic Kubernetes Service (EKS)}
+With companies moving toward Kubernetes to handle increasingly complex workloads, this paper focuses on deployment of a containerised workload to Kubernetes. AWS EKS is a fully managed Kubernetes service that enables Kubernetes workloads to be run seamlessly on AWS cloud. 
+
+\textbf{\textit{Workflow for deploying a containerised application to EKS}}
+\vspace{-1em}
+\begin{enumerate}
+    \item Creating a VPC
+        \begin{enumerate}
+            \item As mentioned previously, the VPC serves as the foundational network infrastructure that we deploy our cloud resources to. However, the VPC for use with EKS must meet EKS networking requirements in order to ensure proper communication between Kubernetes nodes, as well as between the nodes and the external internet. These requirements include IP addressing requirements, DNS resolution support, and subnet configuration, just to name a few. The major list of requirements are detailed in Appendix \ref{appendix:eks-vpc-requirements}. In order to minimise configuration for developers, AWS has also provided a pre-defined CloudFormation template (Appendix \ref{appendix:cloudformation-eks-vpc-yaml}). However, this template is still very complex, and difficult to find amongst all the AWS developer documentation, making this process an extremely tedious one. 
+        \end{enumerate}
+    \item Create the EKS
+        \begin{enumerate}
+        \item The EKS can be created via AWS CLI or the console. Briefly, through the setup wizard, we will need to do the following:
+            \begin{enumerate}
+            \item Decide on a name of the cluster, and Kubernetes version to be used in the cluster.
+            \item Create and use a Cluster IAM role, which allows the Kubernetes control plane to manage AWS resources on your behalf.
+            \item Create and use a Node IAM role, which will be attached to the EC2 instance launched and registered with the cluster.
+            \item Select the VPC created earlier for use with the EKS cluster resources.
+            \item Select the subnets in the VPC created earlier where the control plane may place elastic network interfaces (ENIs) to facilitate communication with the cluster. These would typically be the private subnets created earlier in the creation of the VPC (one per availability zone).
+            \item Choose from a wide selection of AWS add-ons (Appendix \ref{appendix:aws-eks-addons}). This is required for configuring ingress controllers, integrating with external file systems, etc. 
+            \end{enumerate}
+        \end{enumerate}
+    \item Configure the EKS Node Groups
+        \begin{enumerate}
+        \item Kubernetes works by scheduling pods onto nodes, which are our compute instances. AWS EKS uses EC2 instances with Auto Scaling Groups to satisfy these requirements. At this stage, we would need to choose from the different Amazon Machine Image (AMI) types, Instance Types, as well as determine the scaling configuration for the node group, and set up networking between node groups. 
+        \end{enumerate}
+    \item Configure our local environment to communicate with the EKS Cluster
+        \begin{enumerate}
+        \item As with every Kubernetes cluster, the local environment needs to attain certificates, and other metadata to apply the Kubernetes config to the cloud environment. In typical production environments, this is handled through git CI/CD pipelines, or a CI/CD orchestrator tool such as Jenkins. In development, to configure the kubeconfig locally, we can run \texttt{aws eks --region <region> update-kubeconfig --name <name>} to configure our local configuration so that we are able to communicate with the Kubernetes cluster.
+        \end{enumerate}
+    \item Run our Kubernetes application
+        \begin{enumerate}
+        \item Assuming that we have a Kubernetes configuration ready to go, we can then apply the Kubernetes configuration to the cluster, and begin testing our application. 
+        \end{enumerate}
+\end{enumerate}
+
+\section{Challenges}
+As illustrated above, the traditional approach of deploying a containerised application is highly cumbersome and error-prone. Missing any of the essential steps listed often leads to hours of debugging – whether it’s identifying why the website is unresponsive, troubleshooting connectivity issues between nodes or exposing the application to the internet. Each and every step plays a critical role in ensuring that the application runs smoothly and error free. The traditional approaches are also very time-consuming, and have a steep learning curve. Engineers must gain mastery of the different cloud technologies, and know how to integrate them seamlessly, making this task both challenging, and resource-intensive.  
+
+\textbf{Complexity of Configuration}
+
+Setting up the environment for containerised application deployment requires a lengthy process of setting up networking within the cluster. This requires developers to understand and gain a mastery over the different cloud components, and learn to apply them within the cloud. A small misconfiguration here could lead to connectivity issues, or resource exhaustion. Furthermore, configuring the security layer also requires careful planning, on order to ensure both security and functionality, making the process extremely time consuming and tedious.
+
+\textbf{Manual Work}
+
+Administrators are required to perform many repetitive tasks, especially if they are required to provision infrastructure for multiple applications. This requires the repeated configuration, and drastically slows down the deployment process and introduces inefficiencies. 
+
+\textbf{Risk of Errors}
+
+Given the numerous configuration options and types, errors in any of the above steps can also lead to failures, downtime, or suboptimal performance of the cluster.
+
+\textbf{Lack of Streamline Integration}
+
+The approaches detailed above are also only used for a barebones configuration of a cluster, and does not integrate other services such as Load Balancing or persistent storage. Integration with these services, should an application require it, will take additional manual setup, and maintenance. 
+
+\textbf{Steep Learning Curve}
+
+Provisioning of these infrastructure resources require a deep understanding of container orchestration and services. Without prior expertise, it is easy to misconfigure the cluster, which could lead to security vulnerabilities or broken deployments. Learning the different cloud technologies is very time consuming, and will inevitably result in reduced velocity in teams. 
+
+
+\section{Proposed Solution}
+The proposed solution, \texttt{cloudkube}, aims to alleviate the above challenges. Besides having an intuitive user interface, \texttt{cloudkube} leverages on the strengths of existing IaC frameworks such as terraform. This allows users to abstract in-depth knowledge about terraform and the cloud away, and provides a quick and easy way to deploy a containerised application to the cloud. 
+
+\subsection{Key Principles}
+\texttt{cloudkube} is built on three main principles: 
+\vspace{-1em}
+\begin{enumerate}
+    \item Simple and Minimal Dependencies: In order to satisfy the simplicity of packaging, distribution, and installation of \texttt{cloudkube}, we opt to keep dependencies as lean as possible, to account for compatibility with host architecture as well as conflicting dependencies. The distribution is also kept lightweight, in that \texttt{cloudkube} is not meant for a full-blown production setup, but rather a quick and easy way to do development testing in the cloud.  As such, more robust frameworks such as terraspace and terragrunt are intentionally excluded. With these, and python installed on a user’s machine, a user is able to do a simple `pip install \texttt{cloudkube}` to install \texttt{cloudkube} on to their system, and get their first Kubernetes application running in the cloud. 
+    \item Leveraging current IaC best practices and tooling: \texttt{cloudkube} is opinionated in the sense that it defines a terraform configuration of the cloud in a specified manner. Used as a tool for beginners, terraform details and implementation are abstracted away, and \texttt{cloudkube} sets up a Kubernetes cluster in a pre-defined manner, much like what is done in minikube. \texttt{cloudkube} also uses the existing methods of tracking terraform state (through the `.tfstate` file). On top of that, to track the installation state of dependencies such as ingress-controllers or persistent volume infrastructure, a configuration file is introduced as well. 
+    \item Intuitiveness and Ease of Use: Drawing inspirations from some of the best-in-class frameworks used today, \texttt{cloudkube} is built with a easy to use terminal interface. From create-react-app, \texttt{cloudkube} implements a setup wizard where users respond to prompts to customize their cluster to fit their development needs. From minikube, cloudkube implements imperative methods to configure cluster ingress controllers and persistent volumes. 
+\end{enumerate}
+
+\subsection{Workflow}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/cloudkube-workflow.png}
+    \caption{Workflow for creating a Kubernetes cluster with \texttt{cloudkube}}
+    \label{fig:cloudkube-workflow}
+\end{figure}
+
+The workflow to get an up and running Kubernetes cluster on the cloud is made much more effortless with \texttt{cloudkube}.  Besides having to wait for about 10 minutes for the cluster to be provisioned, as well as some configurations for authenticating with the cloud, \texttt{cloudkube} automates the provisioning of all cloud resources at the click of a button.
+
+\textbf{Typical Workflow for Deploying an Application \texttt{cloudkube}}
+\begin{enumerate}
+    \item Packaging and Containerisation 
+        \begin{enumerate}
+            \item As with deploying any application to the cloud with Kubernetes, the first step to deploy and application with \texttt{cloudkube} is to containerise the application. This can be done with Docker. 
+            \item Container images to be used in Kubernetes pods should also be pushed to a container registry which the cloud is able to pull from. Examples include Amazon’s Elastic Container Registry, or Dockerhub. Kubernetes secrets for authenticating with these image registries should also be appropriately setup.
+        \end{enumerate}
+    \item Defining the \texttt{cloudkube} configuration 
+        \begin{enumerate}
+      
+            \item \texttt{cloudkube} relies on a configuration file `config.json` in its root directory to conditionally provision different types of infrastructure. Depending on the use-case, as well as the requirements of the application, users can select from different computer architecture types, availability zones as well as naming conventions for resources to be created in the cloud.
+            \item Based on the the Kubernetes configuration, users also need to decide whether to provision and ingress controller, as well as what type of ingress controller to provision.
+            \item Lastly, \texttt{cloudkube} realises PersistentVolumes in Kubernetes through provisioning an Elastic File System which can be mounted to Kubernetes nodes. This helps to provide persistent storage for Kubernetes deployed applications.
+
+        \end{enumerate}
+    \item Provision Infrastructure 
+        \begin{enumerate}
+            \item Before the cloud infrastructure can be applied, the root Terraform module needs to be initialised. \texttt{cloudkube} automatically initializes Terraform, and downloads the relevant providers and modules for its inbuilt Terraform configuration.
+            \item The next step taken by \texttt{cloudkube} is to plan the infrastructure through calling `terraform plan`. This creates a plan for the infrastructure to be created in the cloud, and \texttt{cloudkube} then outputs the plan, and seeks user approval for creating these resources.
+            \item Upon confirmation by the user, \texttt{cloudkube} applies these changes to the cloud, and creates a Kubernetes cluster in the cloud. The infrastructure is created based on the user-specified configuration in the previous step. 
+            
+        \end{enumerate}
+    \item Configure Local Machine to Communicate with the Kubernetes Cluster 
+        \begin{enumerate}
+            \item In typical Kubernetes workflows, users would have to run some cloud-provider specific commands to populate their local Kubernetes configuration in order to communicate with the Kubernetes cluster.
+            \item This step is automatically done by \texttt{cloudkube} within the provisioning step. This means that users are able to get straight to applying their application to the Kubernetes cluster.
+            
+        \end{enumerate}
+    \item Apply application to Kubernetes Cluster   
+        \begin{enumerate}
+            \item Users can apply their Kubernetes configuration to the configured Kubernetes cluster, and begin interacting with their application. Users are also able to interact with their cluster through the various kubectl commands.  
+        \end{enumerate}
+\end{enumerate}
+
+
+Step by step instructions for the initial setup, as well as for developing with \texttt{cloudkube}, are detailed in Appendix \ref{appendix:cloudkube-readme}.
+
+As we can see from the above workflow, the chore and tedium of infrastructure provisioning is greatly abstracted away from the user. This allows a user to deploy their containerised application to the cloud in a matter of minutes.  Specific to deploying the ASR application, the use of \texttt{cloudkube} abstracts away many tedious steps as illustrated by Song Yu’s work on \textit{Infrastructure as Code with Terraform and Terragrunt}. More specifically, with \texttt{cloudkube}, users do not need to do the following steps:
+\vspace{-1em}
+\begin{enumerate}
+    \item \textbf{Initialise Terraform:} \texttt{cloudkube} does this behind the scenes for you. Fetching modules, providers, and updating backend configuration are all done automatically by \texttt{cloudkube}, through \texttt{terraform init}.
+    \item \textbf{Local Kubernetes Context Configuration:} After the infrastructure provisioning stage, \texttt{cloudkube} automatically connects to the cluster, and updates your local Kubernetes configuration files. This ensures that the user is able to communicate with the Kubernetes cluster via any \texttt{kubectl} commands. 
+    \item \textbf{Mounting the EFS on Amazon EC2 Instance:} \texttt{cloudkube} automatically mounts an EFS to the Kubernetes nodes in the EKS. After applying the Kubernetes configuration to the cluster, users are able to interact with the file system.
+    
+\end{enumerate}
+
+As illustrated, the deployment process of ASR application to the cloud is greatly simplified. Furthermore, this is just an example of a deployment of an ASR application. In the implementation section, we will also see another example of deploying a more complex application with multiple pods, and services that communicate with each other.
+
+With \texttt{cloudkube}, development times are greatly decreased, and developers can focus on the application business logic rather than having to debug an obscure permission setting on the cloud, or be a master of cloud technologies. Furthermore, users are also accorded configurability of the cluster, including being able to choose their machine architecture, ingress controller, as well as the provisioning of an EFS volume for PersistentVolume objects in Kubernetes. The configuration of \texttt{cloudkube} is also a low-cost one, in that low-spec machines are chosen from the various machine images offered by AWS.
+
+\subsection{Benefits of \texttt{cloudkube}}
+By leveraging the power of IaC, \texttt{cloudkube} is able to maintain many of the guarantees and benefits that terraform provides. \texttt{cloudkube} also greatly simplifies and accelerates the provisioning of infrastructure. 
+
+\textbf{High Customizability and Extensibility}
+In order to meet the needs to different Kubernetes workloads, \texttt{cloudkube} is built to be configurable. For example, where Ingress resources are declared in Kubernetes, \texttt{cloudkube} offers the installation of a nginx ingress controller to satisfy Kubernetes Ingress resources. Similarly, in order to satisfy PersistentVolume and PersistentVolumeClaim resources, \texttt{\texttt{cloudkube}} also offers the installation of an EFS in the cluster. On top of this, users are also able to customize the machine architecture to ensure compatibility with their applications. 
+
+\textbf{Low Cost Prototyping Solution}
+\texttt{cloudkube} is configured with mostly AWS Free Tier resources. As such, creating a Kubernetes cluster with \texttt{cloudkube} is cheap, and not resource intensive. Furthermore, \texttt{cloudkube} only provisions what you want. This means that only resources that are required by the Kubernetes application are provisioned. This ensures infrastructure is kept lean, and costs are kept low. 
+
+\textbf{Lean Package Distribution on pyPI}
+\texttt{cloudkube} is conveniently distributed on pyPI, which means that anyone with python and pip installed on their machine and conveniently download \texttt{cloudkube} with a single command `pip install \texttt{cloudkube}`.
+
+\textbf{Preconfigured Permissions, Security Groups, Access Control Lists, IAM Roles}
+\texttt{cloudkube} comes with pre-configured permissions, security groups, ACLs, and IAM Roles. Configured IAM Roles ensures that cluster nodes have sufficient permissions on AWS to communicate with each other as well as the external internet. The pre-configured security groups also ensure that traffic between different cloud components is properly configured, to allow flow of information between these components securely. Ingress and Egress resources also govern traffic into and out of the cluster, ensuring that users can reach their deployed services.
+
+\textbf{Built on terraform}
+Being one of the leaders in IaC tooling, terraform is widely used across the industry. It is both robust, and battle-tested by leading firms in the industry. \texttt{cloudkube}, being built on terraform, retains all of the benefits that terraform brings. The most notable would perhaps be the tracking of the state file (\texttt{terraform.tfstate}). Terraform uses the state to determine the changes to be made to infrastructure. This ensures that the state of the cloud is always reflected on the terraform state file. Prior to any provisioning or teardown commands in \texttt{cloudkube}, the existing cloud infrastructure is compared against the state file, and \texttt{cloudkube} fails safely if the system is in an inconsistent state. This avoids leaving dangling resources on the cloud. 

@@ -4,7 +4,12 @@
 \contentsline {figure}{\numberline {2-1}{\ignorespaces Sequence Diagram for Terraform Backend\relax }}{9}{figure.caption.9}%
 \contentsline {figure}{\numberline {2-2}{\ignorespaces Typical Kubernetes Architecture\relax }}{12}{figure.caption.10}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3-1}{\ignorespaces Workflow for creating a Kubernetes cluster with \texttt {cloudkube}\relax }}{24}{figure.caption.11}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {C-1}{\ignorespaces AWS EKS Optional Add-ons\relax }}{R-7}{figure.caption.12}%
 \addvspace {10\p@ }

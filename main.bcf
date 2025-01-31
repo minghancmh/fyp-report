@@ -2394,6 +2394,10 @@
     <bcf:citekey order="26" intorder="1">bindlish-2021</bcf:citekey>
     <bcf:citekey order="27" intorder="1">bindlish-2021</bcf:citekey>
     <bcf:citekey order="28" intorder="1">minikube-docs</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">gartner-2024</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">unlu-2024</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">aws-ecs</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">peck-2023</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
