@@ -133,7 +133,7 @@ The workflow to get an up and running Kubernetes cluster on the cloud is made mu
     \item Defining the \texttt{cloudkube} configuration 
         \begin{enumerate}
       
-            \item \texttt{cloudkube} relies on a configuration file `config.json` in its root directory to conditionally provision different types of infrastructure. Depending on the use-case, as well as the requirements of the application, users can select from different computer architecture types, availability zones as well as naming conventions for resources to be created in the cloud.
+            \item \texttt{cloudkube} relies on a configuration file \texttt{config.json} in its root directory to conditionally provision different types of infrastructure. Depending on the use-case, as well as the requirements of the application, users can select from different computer architecture types, availability zones as well as naming conventions for resources to be created in the cloud.
             \item Based on the the Kubernetes configuration, users also need to decide whether to provision and ingress controller, as well as what type of ingress controller to provision.
             \item Lastly, \texttt{cloudkube} realises PersistentVolumes in Kubernetes through provisioning an Elastic File System which can be mounted to Kubernetes nodes. This helps to provide persistent storage for Kubernetes deployed applications.
 
