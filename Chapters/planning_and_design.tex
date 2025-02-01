@@ -177,16 +177,21 @@ With \texttt{cloudkube}, development times are greatly decreased, and developers
 By leveraging the power of IaC, \texttt{cloudkube} is able to maintain many of the guarantees and benefits that terraform provides. \texttt{cloudkube} also greatly simplifies and accelerates the provisioning of infrastructure. 
 
 \textbf{High Customizability and Extensibility}
+
 In order to meet the needs to different Kubernetes workloads, \texttt{cloudkube} is built to be configurable. For example, where Ingress resources are declared in Kubernetes, \texttt{cloudkube} offers the installation of a nginx ingress controller to satisfy Kubernetes Ingress resources. Similarly, in order to satisfy PersistentVolume and PersistentVolumeClaim resources, \texttt{\texttt{cloudkube}} also offers the installation of an EFS in the cluster. On top of this, users are also able to customize the machine architecture to ensure compatibility with their applications. 
 
 \textbf{Low Cost Prototyping Solution}
+
 \texttt{cloudkube} is configured with mostly AWS Free Tier resources. As such, creating a Kubernetes cluster with \texttt{cloudkube} is cheap, and not resource intensive. Furthermore, \texttt{cloudkube} only provisions what you want. This means that only resources that are required by the Kubernetes application are provisioned. This ensures infrastructure is kept lean, and costs are kept low. 
 
 \textbf{Lean Package Distribution on pyPI}
+
 \texttt{cloudkube} is conveniently distributed on pyPI, which means that anyone with python and pip installed on their machine and conveniently download \texttt{cloudkube} with a single command `pip install \texttt{cloudkube}`.
 
 \textbf{Preconfigured Permissions, Security Groups, Access Control Lists, IAM Roles}
+
 \texttt{cloudkube} comes with pre-configured permissions, security groups, ACLs, and IAM Roles. Configured IAM Roles ensures that cluster nodes have sufficient permissions on AWS to communicate with each other as well as the external internet. The pre-configured security groups also ensure that traffic between different cloud components is properly configured, to allow flow of information between these components securely. Ingress and Egress resources also govern traffic into and out of the cluster, ensuring that users can reach their deployed services.
 
 \textbf{Built on terraform}
+
 Being one of the leaders in IaC tooling, terraform is widely used across the industry. It is both robust, and battle-tested by leading firms in the industry. \texttt{cloudkube}, being built on terraform, retains all of the benefits that terraform brings. The most notable would perhaps be the tracking of the state file (\texttt{terraform.tfstate}). Terraform uses the state to determine the changes to be made to infrastructure. This ensures that the state of the cloud is always reflected on the terraform state file. Prior to any provisioning or teardown commands in \texttt{cloudkube}, the existing cloud infrastructure is compared against the state file, and \texttt{cloudkube} fails safely if the system is in an inconsistent state. This avoids leaving dangling resources on the cloud. 

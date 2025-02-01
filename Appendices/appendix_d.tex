@@ -10,27 +10,27 @@
 
 The initial setup for \texttt{cloudkube} is straightforward and needs to be done only once. Since \texttt{cloudkube} runs on Python (\texttt{>= 3.11}), it is recommended to use virtual environments to avoid dependency conflicts and keep your global environment clean. Virtual environments can be created using \textbf{conda} (recommended), \textbf{pipenv}, or \textbf{python venv}.
 
-\begin{enumerate}[leftmargin=4pt]
+\begin{enumerate}[leftmargin=20pt]
     \item \textbf{Create and Activate a Virtual Environment:}
           Use your preferred method (e.g., conda, pipenv, or venv) to create and activate a virtual environment.
 
     \item \textbf{Install \texttt{cloudkube}:}
-          Run the following command to install \texttt{cloudkube} via \texttt{pip}:
-          \begin{lstlisting}
+          Run the following command to install \texttt{cloudkube} via \texttt{pip}.
+          \begin{lstlisting}[xleftmargin=30pt]
 pip install cloudkube
           \end{lstlisting}
 
     \item \textbf{Verify Installation:}
-          Check if \texttt{cloudkube} was installed successfully:
-          \begin{lstlisting}
+          Check if \texttt{cloudkube} was installed successfully.
+          \begin{lstlisting}[xleftmargin=30pt]
 pip list | grep cloudkube
           \end{lstlisting}
 
     \item \textbf{Install AWS CLI:}
           Follow the official AWS documentation to install the AWS CLI: 
-          \href{https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html}{\color{blue}\underline{Getting Started with AWS CLI}}.
-          Configure your cloud credentials:
-          \begin{lstlisting}
+          \href{https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html}{\color{blue}\underline{Getting Started with AWS CLI}}
+         and configure your cloud credentials.
+          \begin{lstlisting}[xleftmargin=30pt]
 aws configure
           \end{lstlisting}
           For additional details, refer to the 
@@ -40,7 +40,7 @@ aws configure
           \begin{itemize}[leftmargin=4pt]
               \item \textbf{macOS (Recommended):}
                     Install Terraform using Homebrew:
-                    \begin{lstlisting}
+                    \begin{lstlisting}[xleftmargin=30pt]
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 brew update
@@ -52,24 +52,25 @@ brew upgrade hashicorp/tap/terraform
           \end{itemize}
 
     \item \textbf{Verify Terraform Installation:}
-          \begin{lstlisting}
+          \begin{lstlisting}[xleftmargin=30pt]
 terraform -version
           \end{lstlisting}
 \end{enumerate}
+
 
 Once all dependencies are installed, you are ready to start using \texttt{cloudkube}!
 
 \subsection*{\texttt{cloudkube} Workflow}
 
 \subsubsection*{1. Initialize \texttt{cloudkube}}
-To start working with cloudkube, run `cloudkube init`. This will bring up and interactive wizard, which will bring you through the provisioning of a cluster. 
-\begin{lstlisting}
+To start working with cloudkube, run \texttt{cloudkube init}. This will bring up an interactive wizard, which will bring you through the provisioning of a cluster. 
+\begin{lstlisting}[xleftmargin=10pt]
 cloudkube init
 \end{lstlisting}
-This starts an interactive wizard to guide you through the provisioning of a Kubernetes cluster.
+
 
 \subsubsection*{2. Configure Cluster Configuration}
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
     \item In the wizard, select \textbf{Option 2} to configure the cluster.
     \item Provide the following information when prompted:
           \begin{itemize}
@@ -82,7 +83,7 @@ This starts an interactive wizard to guide you through the provisioning of a Kub
 \end{enumerate}
 
 \subsubsection*{3. Spin Up the Cluster}
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
     \item Select \textbf{Option 3} in the interactive wizard.
     \item \texttt{cloudkube} performs the following actions:
           \begin{itemize}
@@ -98,16 +99,16 @@ This starts an interactive wizard to guide you through the provisioning of a Kub
 \end{enumerate}
 
 \subsubsection*{4. Verify Cluster Creation}
-\begin{enumerate}
+\begin{enumerate}[label=\alph*.]
     \item Check the cluster creation via the \textbf{AWS Console}.
     \item Use the following \texttt{kubectl} commands for further verification:
           \begin{itemize}
               \item List all pods:
-                    \begin{lstlisting}
+                    \begin{lstlisting}[xleftmargin=64pt]
 kubectl get pods -A
                     \end{lstlisting}
               \item List all nodes:
-                    \begin{lstlisting}
+                    \begin{lstlisting}[xleftmargin=64pt]
 kubectl get nodes
                     \end{lstlisting}
           \end{itemize}
@@ -115,35 +116,36 @@ kubectl get nodes
 
 \subsubsection*{5. Apply Kubernetes Manifests}
 To deploy your application:
-\begin{enumerate}
+\vspace{-1em}
+\begin{enumerate}[label=\alph*.]
     \item Ensure your Kubernetes YAML files are stored in the \texttt{./kubernetes} directory.
     \item Apply the manifests:
-          \begin{lstlisting}
+          \begin{lstlisting}[xleftmargin=40pt]
 kubectl apply -f ./kubernetes
           \end{lstlisting}
 \end{enumerate}
 
-\subsubsection*{6. Teardown and Resource Deprovisioning}
+\subsubsection*{6. Interact with your Kubernetes Cluster}
+
+At this point, we have a fully functional Kubernetes cluster with your deployed application. You should be able to use all kubectl commands to interact with your application. For a list of commands to interact with the cluster, please refer to the 
+\href{https://kubernetes.io/docs/home/}{\color{blue}\underline{Kubernetes Documentation}}.
+
+\subsubsection*{7. Teardown and Resource Deprovisioning}
 Once you are done testing your application:
 \vspace{-1em}
-\begin{enumerate}
-    \item Remove your Kubernetes deployment:
-          \begin{lstlisting}
+\begin{enumerate}[label=\alph*.]
+    \item Remove your Kubernetes deployment.
+          \begin{lstlisting}[xleftmargin=40pt]
 kubectl delete -f ./kubernetes
           \end{lstlisting}
-    \item Run the following command and select \textbf{Option 4} in the wizard to:
-          \begin{itemize}
-              \item Deprovision all resources
-              \item Clean up your local Kubernetes configuration file (\texttt{\textasciitilde/.kube/config}):
-                    \begin{lstlisting}
+    \item Run the following command and select \textbf{Option 4} in the wizard to deprovision all resources and clean up your local Kubernetes configuration.
+            \begin{lstlisting}[xleftmargin=40pt]
 cloudkube init
-                    \end{lstlisting}
-          \end{itemize}
+            \end{lstlisting}
 \end{enumerate}
 
 \subsection*{Notes}
 \begin{itemize}
     \item As of version \texttt{v1.0}, \texttt{cloudkube} only supports \textbf{AWS Cloud}. If support for other cloud providers is added in the future, their respective setup steps should be followed.
-    \item Ensure that the EKS cluster meets all networking and security requirements specified in the AWS documentation.
 \end{itemize}
 
