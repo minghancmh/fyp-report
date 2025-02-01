@@ -2,4 +2,60 @@
 In this chapter, we will delve deeper and take a closer look at the implementation details of \texttt{cloudkube}. This chapter is organized into several sections.
 Section 4.1 will discuss the architecture of \texttt{cloudkube}, where we will see a high level overview of the different modules and services in \texttt{cloudkube}.
 Next, section 4.2 will delve deeper into each of these modules.
-Lastly, section 4.3 will cover the publishing of \texttt{cloudkube} to \texttt{pyPI} for distribution via \texttt{pip}.
+Lastly, section 4.3 will cover the publishing of \texttt{cloudkube} to \texttt{pyPI} for distribution via \texttt{pip}, making \texttt{cloudkube} easily installable
+across any machine that is compatible with python.
+
+\section{\texttt{cloudkube} Architecture} 
+
+\texttt{cloudkube} is an orchestration tool designed to simplify the development and management of Kubernetes clusters in cloud environments. It leverages terraform
+for infrastructure provisioning, and provides python scripts for managing the various cloud components. These python scripts are made available thorugh a simple CLI interface,
+which will be detailed in a later section. It should be noted that  the primary obejctive of this project was to simplify infrastructure provisioning. Consequently, the
+focus was placed on designing and implementing robust cloud infrastructure, while the user interface was intentionally simple. In order to streamline interactions, \texttt{cloudkube}
+features a straighforward CLI, ensuring functionality and ease of use without unnecessary complexity.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/cloudkube-architecture.png}
+    \caption{\texttt{cloudkube} architecture diagram}
+    \label{fig:cloudkube-architecture-diagram}
+\end{figure}
+
+=====REMOVE
+talk about how cluster manager was built in a command pattern...
+The software design pattern where every action has a corresponding opposite action (or "undo") is known as the Command Pattern.
+
+Command Pattern
+The Command Pattern is a behavioral design pattern that encapsulates actions or operations as objects. This allows you to parameterize objects with operations, delay the execution of operations, and provide a mechanism to undo or redo operations.
+
+Key Characteristics of the Command Pattern:
+Encapsulation of Requests:
+
+Each action (e.g., "install ingress" or "remove ingress") is encapsulated in a separate command object.
+The command object includes the logic for executing and reversing (undoing) the action.
+Undo/Redo Support:
+
+The Command Pattern often maintains a history of executed commands. Each command knows how to undo itself, enabling undo/redo functionality.
+Decoupling:
+
+The invoker (e.g., a CLI or GUI) does not need to know the details of the operation; it only needs to trigger commands.
+Example in Practice:
+If you're building a CLI tool for infrastructure management, you can apply the Command Pattern as follows:
+
+Command Objects:
+
+InstallIngressCommand
+RemoveIngressCommand
+ConfigureKubectlCommand
+Each command has an execute() method (for performing the action) and an undo() method (to reverse it).
+Invoker:
+
+A CLI tool that calls execute() for a command when the user triggers an action and undo() when the user requests a rollback.
+Receiver:
+
+The underlying logic that performs the action, such as provisioning infrastructure or configuring services.
+Why the Command Pattern Fits Well:
+It provides a clean and modular way to implement undo/redo functionality.
+Each action is self-contained and can be easily extended or modified.
+It helps maintain a history of actions, allowing for flexible state management.
+Would you like an example implementation of the Command Pattern?
+=====REMOVE

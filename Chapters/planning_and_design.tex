@@ -160,7 +160,7 @@ The workflow to get an up and running Kubernetes cluster on the cloud is made mu
 
 Step by step instructions for the initial setup, as well as for developing with \texttt{cloudkube}, are detailed in Appendix \ref{appendix:cloudkube-readme}.
 
-As we can see from the above workflow, the chore and tedium of infrastructure provisioning is greatly abstracted away from the user. This allows a user to deploy their containerised application to the cloud in a matter of minutes.  Specific to deploying the ASR application, the use of \texttt{cloudkube} abstracts away many tedious steps as illustrated by Song Yu’s work on \textit{Infrastructure as Code with Terraform and Terragrunt}. More specifically, with \texttt{cloudkube}, users do not need to do the following steps:
+As we can see from the above workflow, the chore and tedium of infrastructure provisioning is greatly abstracted away from the user. This allows a user to deploy their containerised application to the cloud in a matter of minutes.  Specific to deploying the ASR application, the use of \texttt{cloudkube} abstracts away many tedious steps as illustrated by Song Yu’s work on \textit{Infrastructure as Code with Terraform and Terragrunt} \cite{song-yu-2023}. More specifically, with \texttt{cloudkube}, users do not need to do the following steps:
 \vspace{-1em}
 \begin{enumerate}
     \item \textbf{Initialise Terraform:} \texttt{cloudkube} does this behind the scenes for you. Fetching modules, providers, and updating backend configuration are all done automatically by \texttt{cloudkube}, through \texttt{terraform init}.
