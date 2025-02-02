@@ -48,6 +48,8 @@
     }
   }
 }
+
+\captionsetup[figure]{skip=15pt}
  
 
 
@@ -128,8 +130,9 @@
     basewidth = 0.5em
 }
 \setlength{\parskip}{1em} % Adjust '1em' to your desired space
-
- 
+\setlength{\floatsep}{20pt}    % Space between figures/tables (float objects)
+\setlength{\textfloatsep}{20pt} % Space between figures and text
+\setlength{\intextsep}{20pt}    % Space above/below inline figures and text
 \lstset{style=mystyle}
 
 \makeatletter

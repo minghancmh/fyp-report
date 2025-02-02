@@ -1,6 +1,7 @@
 \chapter{Implementation}
 In this chapter, we will delve deeper and take a closer look at the implementation details of \texttt{cloudkube}. This chapter is organized into several sections.
 Section 4.1 will discuss the architecture of \texttt{cloudkube}, where we will see a high level overview of the different modules and services in \texttt{cloudkube}.
+We will also see the detailed workflow of \texttt{cloudkube} via the CLI, which will allow us to see how the different modules interact with one another. 
 Next, section 4.2 will delve deeper into each of these modules.
 Lastly, section 4.3 will cover the publishing of \texttt{cloudkube} to \texttt{pyPI} for distribution via \texttt{pip}, making \texttt{cloudkube} easily installable
 across any machine that is compatible with python.
@@ -20,42 +21,115 @@ features a straighforward CLI, ensuring functionality and ease of use without un
     \label{fig:cloudkube-architecture-diagram}
 \end{figure}
 
-=====REMOVE
-talk about how cluster manager was built in a command pattern...
-The software design pattern where every action has a corresponding opposite action (or "undo") is known as the Command Pattern.
 
-Command Pattern
-The Command Pattern is a behavioral design pattern that encapsulates actions or operations as objects. This allows you to parameterize objects with operations, delay the execution of operations, and provide a mechanism to undo or redo operations.
 
-Key Characteristics of the Command Pattern:
-Encapsulation of Requests:
+As we see from Figure \ref{fig:cloudkube-architecture-diagram}, the main entry point into the system is through the \texttt{cloudkube} CLI. This entry point (Figure \ref{fig:cloudkube-init}) can be accessed
+through the command \texttt{cloudkube init}.
 
-Each action (e.g., "install ingress" or "remove ingress") is encapsulated in a separate command object.
-The command object includes the logic for executing and reversing (undoing) the action.
-Undo/Redo Support:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/cloudkube-init.png}
+    \caption{\texttt{cloudkube} entry point}
+    \label{fig:cloudkube-init}
+\end{figure}
 
-The Command Pattern often maintains a history of executed commands. Each command knows how to undo itself, enabling undo/redo functionality.
-Decoupling:
 
-The invoker (e.g., a CLI or GUI) does not need to know the details of the operation; it only needs to trigger commands.
-Example in Practice:
-If you're building a CLI tool for infrastructure management, you can apply the Command Pattern as follows:
 
-Command Objects:
+Following this, the first step would then be to select Option 2, where control is handed over to the \texttt{Cluster Configuration Manager}. The corresponding 
+UI is show in Figure \ref{fig:cloudkube-config}. At this stage, the \texttt{Cluster Configuration Manager} asks us for the following input: 
+\vspace{-1em}
+\begin{itemize}
+    \item \textbf{Region:} This refers to the region in the cloud where we wish to provision our resources.
+    \item \textbf{Prefix:} This allows us to set a unique prefix, for easy identification of our cloud resources created. This is especially useful for working in
+    large teams, where cloud environments have many resources provisioned.
+    \item \textbf{Architecture of Machines:} This allows us to choose between the two major types of machine architectures, \texttt{x86} and \texttt{arm}.
+    \item \textbf{Ingress Controller Types:} This allows us to choose whether we need an ingress controller, as well axs the type of ingress controller to use. If selected,
+    this ultimately provisions an load balancer in the cloud, which satisfies Kubernetes \texttt{Ingress} resources.
+    \item \textbf{Persistent Volume Setup:} This allows us to choose whether we need File System setup, which ultimately satisfies Kubernetes \texttt{Persistent Volume}
+    resources. 
+\end{itemize}
 
-InstallIngressCommand
-RemoveIngressCommand
-ConfigureKubectlCommand
-Each command has an execute() method (for performing the action) and an undo() method (to reverse it).
-Invoker:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/cloudkube-config.png}
+    \caption{\texttt{cloudkube} cluster configuration}
+    \label{fig:cloudkube-config}
+\end{figure}
+\newpage
 
-A CLI tool that calls execute() for a command when the user triggers an action and undo() when the user requests a rollback.
-Receiver:
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-config-success.png}
+    \caption{\texttt{cloudkube} cluster configuration success}
+    \label{fig:cloudkube-config-success}
+\end{figure}
 
-The underlying logic that performs the action, such as provisioning infrastructure or configuring services.
-Why the Command Pattern Fits Well:
-It provides a clean and modular way to implement undo/redo functionality.
-Each action is self-contained and can be easily extended or modified.
-It helps maintain a history of actions, allowing for flexible state management.
-Would you like an example implementation of the Command Pattern?
-=====REMOVE
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-config-cwd.png}
+    \caption{\texttt{cloudkube} \texttt{config.json} saved to our current working directory}
+    \label{fig:cloudkube-config-cwd}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cat-config.png}
+    \caption{Contents of \texttt{config.json}}
+    \label{fig:cat-config}
+\end{figure}
+
+Once the \texttt{Cluster Configuration Manager} has validated our input, it will show the corresponding configuration file that it has saved to \texttt{config.json} (Figure \ref{fig:cloudkube-config-success}). 
+It should be noted that thie \texttt{config.json} file is saved to our current working directory, which is where we ran \texttt{cloudkube} from. In the previous step,
+we ran \texttt{cloudkube init} in our \texttt{FYP Report} directory, and Figure \ref{fig:cloudkube-config-cwd} shows the \texttt{config.json} in our \texttt{FYP Report}
+directory. Figure \ref{fig:cat-config} shows the contents of \texttt{config.json}, which is output by the \texttt{Cluster Configuration Manager}.
+
+At this point, we have entered all the configuration that \texttt{cloudkube} requires, and \texttt{cloudkube} is ready to provision our desired infrastructure 
+for us (Figure \ref{fig:cloudkube-config-success}). 
+
+
+
+
+
+
+
+
+
+
+
+
+% =====REMOVE
+% talk about how cluster manager was built in a command pattern...
+% The software design pattern where every action has a corresponding opposite action (or "undo") is known as the Command Pattern.
+
+% Command Pattern
+% The Command Pattern is a behavioral design pattern that encapsulates actions or operations as objects. This allows you to parameterize objects with operations, delay the execution of operations, and provide a mechanism to undo or redo operations.
+
+% Key Characteristics of the Command Pattern:
+% Encapsulation of Requests:
+
+% Each action (e.g., "install ingress" or "remove ingress") is encapsulated in a separate command object.
+% The command object includes the logic for executing and reversing (undoing) the action.
+% Undo/Redo Support:
+
+% The Command Pattern often maintains a history of executed commands. Each command knows how to undo itself, enabling undo/redo functionality.
+% Decoupling:
+
+% The invoker (e.g., a CLI or GUI) does not need to know the details of the operation; it only needs to trigger commands.
+% Example in Practice:
+% If you're building a CLI tool for infrastructure management, you can apply the Command Pattern as follows:
+
+% Command Objects:
+
+% InstallIngressCommand
+% RemoveIngressCommand
+% ConfigureKubectlCommand
+% Each command has an execute() method (for performing the action) and an undo() method (to reverse it).
+% Invoker:
+
+% A CLI tool that calls execute() for a command when the user triggers an action and undo() when the user requests a rollback.
+% Receiver:
+
+% The underlying logic that performs the action, such as provisioning infrastructure or configuring services.
+% Why the Command Pattern Fits Well:
+% It provides a clean and modular way to implement undo/redo functionality.
+% Each action is self-contained and can be easily extended or modified.
+% It helps maintain a history of actions, allowing for flexible state management.
+% Would you like an example implementation of the Command Pattern?
+% =====REMOVE
