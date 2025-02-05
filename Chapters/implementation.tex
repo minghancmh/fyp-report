@@ -1,19 +1,19 @@
 \chapter{Implementation}
 In this chapter, we will delve deeper and take a closer look at the implementation details of \texttt{cloudkube}. This chapter is organized into several sections.
+
 Section 4.1 will discuss the architecture of \texttt{cloudkube}, where we will see a high level overview of the different modules and services in \texttt{cloudkube}.
-We will also see the detailed workflow of \texttt{cloudkube} via the CLI, which will allow us to see how the different modules interact with one another. 
-Next, section 4.2 will delve deeper into each of these modules.
-Lastly, section 4.3 will cover the publishing of \texttt{cloudkube} to \texttt{pyPI} for distribution via \texttt{pip}, making \texttt{cloudkube} easily installable
-across any machine that is compatible with python.
+We will also see the detailed workflow of \texttt{cloudkube} via the CLI, which will allow us to see how the different modules interact with one another.
+
+Next, section 4.2 will discuss system design patterns used for the implementation of \texttt{cloudkube}. We will rationalise these choices, and explore how these
+patterns are realised in \texttt{cloudkube}.
+
+Section 4.3 will delve deeper into each of the different modules in \texttt{cloudkube}, 
+where we will look at detailed code segments to see how the different functions are implemented.
+
+Lastly, section 4.4 will cover the publishing of \texttt{cloudkube} to \texttt{pip} for easy distribution,
+as well as the development of github workflows for publishing and realising to \texttt{pip}.
 
 \section{\texttt{cloudkube} Architecture} 
-
-\texttt{cloudkube} is an orchestration tool designed to simplify the development and management of Kubernetes clusters in cloud environments. It leverages terraform
-for infrastructure provisioning, and provides python scripts for managing the various cloud components. These python scripts are made available thorugh a simple CLI interface,
-which will be detailed in a later section. It should be noted that  the primary obejctive of this project was to simplify infrastructure provisioning. Consequently, the
-focus was placed on designing and implementing robust cloud infrastructure, while the user interface was intentionally simple. In order to streamline interactions, \texttt{cloudkube}
-features a straighforward CLI, ensuring functionality and ease of use without unnecessary complexity.
-
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{fig/cloudkube-architecture.png}
@@ -22,7 +22,13 @@ features a straighforward CLI, ensuring functionality and ease of use without un
 \end{figure}
 
 
+\texttt{cloudkube} is an orchestration tool designed to simplify the development and management of Kubernetes clusters in cloud environments. It leverages terraform
+for infrastructure provisioning, and provides python scripts for managing the various cloud components. These python scripts are made available thorugh a simple CLI interface,
+which will be detailed in a later section. It should be noted that the primary objective of this project was to simplify infrastructure provisioning. Consequently, the
+focus was placed on designing and implementing robust cloud infrastructure, while the user interface was intentionally kept simple. In order to streamline interactions, \texttt{cloudkube}
+features a straighforward CLI, ensuring functionality and ease of use without unnecessary complexity.
 
+\subsection{Configuring the cluster}
 As we see from Figure \ref{fig:cloudkube-architecture-diagram}, the main entry point into the system is through the \texttt{cloudkube} CLI. This entry point (Figure \ref{fig:cloudkube-init}) can be accessed
 through the command \texttt{cloudkube init}.
 
@@ -49,13 +55,13 @@ UI is show in Figure \ref{fig:cloudkube-config}. At this stage, the \texttt{Clus
     resources. 
 \end{itemize}
 
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{fig/cloudkube-config.png}
     \caption{\texttt{cloudkube} cluster configuration}
     \label{fig:cloudkube-config}
 \end{figure}
-\newpage
 
 \begin{figure}[h!]
     \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-config-success.png}
@@ -75,13 +81,175 @@ UI is show in Figure \ref{fig:cloudkube-config}. At this stage, the \texttt{Clus
     \label{fig:cat-config}
 \end{figure}
 
-Once the \texttt{Cluster Configuration Manager} has validated our input, it will show the corresponding configuration file that it has saved to \texttt{config.json} (Figure \ref{fig:cloudkube-config-success}). 
-It should be noted that thie \texttt{config.json} file is saved to our current working directory, which is where we ran \texttt{cloudkube} from. In the previous step,
+At each of these steps, the \texttt{Cluster Configuration Manager} validates our input. Once our input is verified, the \texttt{Cluster Configuration Manager}
+shows the corresponding configuration file that it has saved to \texttt{config.json} (Figure \ref{fig:cloudkube-config-success}). 
+It should be noted that thie \texttt{config.json} file is saved to our current working directory, which is where we ran \texttt{cloudkube init} from. 
+
+In the previous step,
 we ran \texttt{cloudkube init} in our \texttt{FYP Report} directory, and Figure \ref{fig:cloudkube-config-cwd} shows the \texttt{config.json} in our \texttt{FYP Report}
 directory. Figure \ref{fig:cat-config} shows the contents of \texttt{config.json}, which is output by the \texttt{Cluster Configuration Manager}.
 
 At this point, we have entered all the configuration that \texttt{cloudkube} requires, and \texttt{cloudkube} is ready to provision our desired infrastructure 
 for us (Figure \ref{fig:cloudkube-config-success}). 
+
+\subsection{Provisioning the Infrastructure}
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-provision.png}
+    \caption{Truncated output of terraform plan}
+    \label{fig:cloudkube-provision}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-provision-approval.png}
+    \caption{User input for approval of terraform plan}
+    \label{fig:cloudkube-provision-approval}
+\end{figure}
+
+In order to spin up our infrastructure, we will then select Option 3 (Figure \ref{fig:cloudkube-provision}). \texttt{cloudkube} then hands over 
+control to the \texttt{Cluster Manager}. The \texttt{Cluster Manager} first reads from the configuration file \texttt{config.json} that 
+we configured earlier. It then uses these options to provision the corresponding infrastructure on the cloud. The \texttt{Cluster Manager} 
+will then output the plan from \texttt{terraform} for user approval (Figure \ref{fig:cloudkube-provision-approval}). The full output is attached in Appendix \ref{appendix:cloudkube-provision-tf-plan}. 
+Upon user approval, the plan is then applied to the cloud environment. Any errors, info, or warning logs output by terraform are 
+reflected into the \texttt{cloudkube} CLI for easier debugging by the user.
+
+\begin{figure}[h!]
+    \centering \includegraphics[width=0.8\textwidth]{fig/cloudkube-output.png}
+    \caption{truncated \texttt{cloudkube} output upon successful provisioning}
+    \label{fig:cloudkube-output}
+\end{figure}
+
+Once the terraform plan has been successfully applied to the cloud, relevant information about the cluster, as well as info logs are 
+output by \texttt{cloudkube} (Figure \ref{fig:cloudkube-output}). The full output by \texttt{cloudkube} upon successful infrastructure
+provisioning is presented in Appendix \ref{appendix:cloudkube-successful-provision-output}.
+
+\begin{lstlisting}[caption={truncated \texttt{cloudkube} output upon successful provisioning}, breaklines=true, breakatwhitespace=false, numbers=left, label={lst:cloudkube-success-output}, xleftmargin=10pt]
+    Outputs:
+
+cluster_endpoint = "https://5862339F7E77382B0A74D8C85BD42D31.gr7.ap-southeast-1.eks.amazonaws.com"
+cluster_name = "mh-fyp-eks-wFMZsm5Z"
+cluster_security_group_id = "sg-0869b037f781256c0"
+efs_id = "fs-078a7048b2c301c27"
+region = "ap-southeast-1"
+[INFO]: Terraform applied successfully
+Raw Terraform output for 'cluster_name': mh-fyp-eks-wFMZsm5Z
+Raw Terraform output for 'region': ap-southeast-1
+region:ap-southeast-1, cluster_name:mh-fyp-eks-wFMZsm5Z
+[INFO]: kubectl configured successfully
+[INFO]: install_aws_nginx_controller: Applied resource from https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml successfully
+\end{lstlisting}
+
+Referring to Listing \ref{lst:cloudkube-success-output}, we see at line 8 that the application of the terraform plan has completed
+successfully. The corresponding outputs, including the provisioned EFS that we configured previously (Figure \ref{fig:cat-config}), are shown.
+These outputs can then be used in our Kubernetes manifests.
+
+At line 12 (Listing \ref{lst:cloudkube-success-output}), we see the log \texttt{kubectl configured successfully}. Under the hood,
+\texttt{cloudkube} authenticates the local environment with the Kubernetes cluster provisioned in the cloud. This populates the 
+\texttt{\textasciitilde/.kube/config} file, which allows us to communicate with the Kubernetes cluster from our local environment. 
+
+Lastly, given that we required an ingress controller for our set up (Figure \ref{fig:cat-config}), \texttt{cloudkube} provisions an
+ingress controller, and logs the successfully provisioning of this ingress controller at line 13 (Listing \ref{lst:cloudkube-success-output}).
+
+At this stage, we have a fully functional Kubernetes cluster up and running in the cloud of our choice. We can then interact with the cluster,
+and deploy our application to the cluster. In the subsequent chapter, we will look at the deployment of two types of applications
+to this cluster. 
+
+
+
+\section{System Design Patterns}
+The implementation of several system design patterns in \texttt{cloudkube} was instrumental in ensuring the system
+was both modular and scalable. In particular, the Command pattern helped to encapsulate user actions such as provisioning and tearing
+down resources into discrete, reusable commands. On the other hand, the Facade pattern was also employed to abstract the 
+complexities of underlying operation, which helped to simplify the user experience, ensuring seamless interaction with \texttt{cloudkube}
+without requiring knowledge of its internal intricacies. 
+
+\subsection{Command Pattern}
+The Command pattern is used to encapsulate requests as objects, which allow to parametrization of clients
+with different requests \cite{gamma1994design}. This allows for loose coupling between commmand objects as well
+as the invoker. Specific to \texttt{cloudkube}, the command pattern is seen in the menu-driven system \texttt{run\_wizard}.
+
+\begin{lstlisting}[xleftmargin=10pt, caption={Code snippet for main \texttt{cloudkube} entrypoint}]
+def run_wizard():
+    while True:
+        display_menu_options()
+        selection = input("Selection: ")
+        print()
+        match selection:
+            case "1":
+                clusterConfig.configure_cloud()
+            case "2":
+                clusterConfig.configure_cluster_interactive()
+            case "3":
+                ClusterManager.spin_up_cluster()
+            case "4":
+                ClusterManager.tear_down_cluster()
+            case "5":
+                print("exiting...")
+                break
+            case _:
+                print("Invalid option selected. Please re-enter.")
+
+\end{lstlisting}
+
+As seen in the code snippet above, the \texttt{match} statement in \texttt{run\_wizard} maps the user input to
+specific operations. Each option then corresponds to a command, that is encapsulated as a function all by a controller 
+component. This allows the easy extension of a specific action, allowing for easy addition of new commands without 
+drastic changes to the core application logic. 
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{fig/commands-package.png}
+    \caption{Commands Package}
+    \label{fig:commands-package}
+\end{figure}
+
+While the individual commands in \texttt{cloudkube} are not explicit Classes, they are abstracted to a package within \texttt{cloudkube} (Figure \ref{fig:commands-package}).
+Each of these command objects perform specific actions, and are call upon by the controllers (i.e. \texttt{Cluster Manager}). It should also
+be noted that each of these commands come with a corresponding \textit{undo} command. For example, the \texttt{install\_efs\_csi\_driver} has a 
+corresponding \texttt{remove\_efs\_csi\_driver}. As we will see later on, this makes it easy to make calls directly to the \texttt{cloudkube} CLI to modify cloud configuration.
+
+
+\subsection{Facade Pattern}
+The Facade pattern helps to provide a unified interface, which makes the system easier to use \cite{gamma1994design}. In the case of \texttt{cloudkube},
+the \texttt{Cluster Manager} and \texttt{Cluster Configuration Manager} modules serve as facades for more complex underlying objects.
+They help to provide a simplified, high-level interface for cluster configuration, as well as spinning up and tearing down clusters.
+
+\begin{lstlisting}[xleftmargin=10pt, caption={Code snippet for ClusterManager class method}]
+    def spin_up_cluster(path_to_config="config.json"):
+        cfg = ClusterManager.__parse_config(path_to_config)
+        if not cfg:
+            print(
+                "Invalid configuration file provided. Have you run '2. Configure cluster configuration?'"
+            )
+            return
+
+        # Step 1: Apply Terraform
+        cluster_name, region = apply_terraform()
+
+        # Step 2: Configure kubectl for the EKS cluster
+        configure_kubectl(cluster_name, region)
+
+        # region, prefix, architecture are used in the main.tf terraform code
+
+        # at this step, we only need to check ingress_controller and require_efs state
+
+        if cfg["ingress_controller"] != "None":
+            install_ingress_controller(cfg["ingress_controller"])
+
+        if cfg["require_efs"] == "True":
+            apply_efs_csi_driver(
+                "kubernetes-sigs/aws-efs-csi-driver", ref="release-2.0"
+            )
+
+\end{lstlisting}
+
+For example, in the code snipped above for the class method \texttt{spin\_up\_cluster}, we see a grouping of multiple 
+lower-level operations such as \texttt{apply\_terraform}, and \texttt{configure\_kubectl}. This abstracts away the intricate details
+when provisioning the cluster, making the code more readable, and navigatable when understading the underlying logic in \texttt{cloudkube}. 
+
+\section{Module Implementations}
+
+\section{Publishing and Distribution}
 
 
 

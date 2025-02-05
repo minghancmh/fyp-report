@@ -60,7 +60,11 @@ Given the limited time frame, this project focuses on delivering core functional
 \end{enumerate}
 
 \section{Contributions}
-This section highlights the key contributions made during the course of this project. The key contributions to this project can be roughly broken down into two parts. The first and main part relates to the infrastructure provisioning, which allows for any containerised workload to be deployed to a Kubernetes cluster hosted on the AWS cloud. The second part relates to optimizing the deployment of the ASR application. 
+This section highlights the key contributions made during the course of this project. The key contributions to this project can be roughly broken down into two parts. 
+The first and main part relates to the infrastructure provisioning, which allows for any containerised workload to be deployed to a Kubernetes cluster hosted on the AWS cloud. 
+The second part relates to optimizing the deployment of the ASR application. While the initial scope of this FYP was to provision infrastructure
+for SpeechLab applications, this FYP has gone beyond this goal, and \texttt{cloudkube} has proved to be scalable, and extendable to different
+types of Kubernetes workloads.
 
 \textbf{Contributions toward Infrastructure Provisioning Workflow}
 \vspace{-1em}
@@ -70,7 +74,7 @@ This section highlights the key contributions made during the course of this pro
     \item \textbf{Idempotency and Atomic Provisioning:} To align with the requirements stated above, \texttt{cloudkube} was also developed with state tracking, to ensure idempotent and atomic provisioning and deprovisioning of resources to prevent resource leaks and unnecessary costs.
     \item \textbf{Easy user configurability:} After speaking to developers working on SpeechLab applications, and noting the use cases of different Kubernetes workloads, \texttt{cloudkube} provides customization options for infrastructure components such as compute instances, ingress controllers, and persistent volumes.
     \item \textbf{Optimization of development workflow for authenticating local machine with Kubernetes cluster:} \texttt{cloudkube} also facilitates the configuration of local environments to communicate and authenticate seamlessly with the Kubernetes cluster.
-    \item \textbf{Extensive testing: } Extensive testing was also conducted to ensure the reliability and performance of the \texttt{cloudkube} tool. This included running multiple Kubernetes workloads against the provisioned cluster, which will be explained in detail in Chapter 4.
+    \item \textbf{Extensive testing: } Extensive testing was also conducted to ensure the reliability and performance of the \texttt{cloudkube} tool. This included running multiple Kubernetes workloads against the provisioned cluster, which will be explained in detail in Chapter 5.
 \end{enumerate}
 
 \textbf{Contributions toward Optimizing ASR Kubernetes Deployment}

@@ -1,0 +1,274 @@
+\chapter{Appendix F: \texttt{cloudkube} successful provisioning output}
+\label{appendix:cloudkube-successful-provision-output}
+
+The following shows the output when \texttt{cloudkube} successfully provisions a Kubernetes cluster. 
+This is output after user approval of \texttt{terraform plan}.
+
+\begin{lstlisting}[caption={\texttt{cloudkube} successful provisioning output}, breaklines=true, breakatwhitespace=false]
+    aws_efs_backup_policy.policy: Destroying... [id=fs-006892326429a9091]
+    aws_efs_mount_target.efs_mount_target_1: Destroying... [id=fsmt-049b1cfd599b6d02f]
+    aws_efs_mount_target.efs_mount_target_2: Destroying... [id=fsmt-013a25d1fba50ba69]
+    module.eks.aws_cloudwatch_log_group.this[0]: Creating...
+    module.eks.aws_iam_role.this[0]: Creating...
+    module.eks.aws_cloudwatch_log_group.this[0]: Creation complete after 0s [id=/aws/eks/mh-fyp-eks-wFMZsm5Z/cluster]
+    aws_efs_backup_policy.policy: Destruction complete after 2s
+    module.eks.aws_iam_role.this[0]: Creation complete after 2s [id=mh-fyp-eks-wFMZsm5Z-cluster-20250203032553942600000001]
+    module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Creating...
+    module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creating...
+    module.eks.module.kms.data.aws_iam_policy_document.this[0]: Reading...
+    module.eks.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=1425458566]
+    module.eks.module.kms.aws_kms_key.this[0]: Creating...
+    module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Creation complete after 1s [id=mh-fyp-eks-wFMZsm5Z-cluster-20250203032553942600000001-20250203032556718200000002]
+    module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Creation complete after 1s [id=mh-fyp-eks-wFMZsm5Z-cluster-20250203032553942600000001-20250203032557022900000003]
+    aws_efs_mount_target.efs_mount_target_1: Still destroying... [id=fsmt-049b1cfd599b6d02f, 10s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still destroying... [id=fsmt-013a25d1fba50ba69, 10s elapsed]
+    module.eks.module.kms.aws_kms_key.this[0]: Still creating... [10s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still destroying... [id=fsmt-049b1cfd599b6d02f, 20s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still destroying... [id=fsmt-013a25d1fba50ba69, 20s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Destruction complete after 21s
+    aws_efs_mount_target.efs_mount_target_1: Destruction complete after 21s
+    aws_efs_file_system.efs: Destroying... [id=fs-006892326429a9091]
+    aws_security_group.efs_security_group: Destroying... [id=sg-05aec177b12885cb7]
+    aws_security_group.efs_security_group: Destruction complete after 1s
+    module.vpc.aws_vpc.this[0]: Modifying... [id=vpc-07906e73af4bdfa38]
+    module.eks.module.kms.aws_kms_key.this[0]: Still creating... [20s elapsed]
+    module.eks.module.kms.aws_kms_key.this[0]: Creation complete after 21s [id=39788f43-b716-41c7-b62c-ea716ead9495]
+    module.eks.module.kms.aws_kms_alias.this["cluster"]: Creating...
+    module.eks.aws_iam_policy.cluster_encryption[0]: Creating...
+    module.vpc.aws_vpc.this[0]: Modifications complete after 1s [id=vpc-07906e73af4bdfa38]
+    module.eks.aws_security_group.cluster[0]: Creating...
+    module.eks.aws_security_group.node[0]: Creating...
+    module.vpc.aws_default_security_group.this[0]: Modifying... [id=sg-004b85b82b9a4e893]
+    module.vpc.aws_default_route_table.default[0]: Modifying... [id=rtb-0ce95e233fcc0893e]
+    aws_security_group.efs_security_group: Creating...
+    module.vpc.aws_subnet.public[1]: Modifying... [id=subnet-00ad26679af7193d6]
+    module.vpc.aws_default_network_acl.this[0]: Modifying... [id=acl-088b7bc72bbae1655]
+    module.vpc.aws_default_route_table.default[0]: Modifications complete after 0s [id=rtb-0ce95e233fcc0893e]
+    module.vpc.aws_default_network_acl.this[0]: Modifications complete after 0s [id=acl-088b7bc72bbae1655]
+    module.vpc.aws_subnet.public[0]: Modifying... [id=subnet-0242d8325c1411258]
+    module.vpc.aws_route_table.public[0]: Modifying... [id=rtb-088893d0f63ae6ae2]
+    module.vpc.aws_default_security_group.this[0]: Modifications complete after 0s [id=sg-004b85b82b9a4e893]
+    module.vpc.aws_subnet.private[0]: Modifying... [id=subnet-0406b1e1be0246d54]
+    module.eks.module.kms.aws_kms_alias.this["cluster"]: Creation complete after 0s [id=alias/eks/mh-fyp-eks-wFMZsm5Z]
+    module.vpc.aws_subnet.public[1]: Modifications complete after 0s [id=subnet-00ad26679af7193d6]
+    module.vpc.aws_route_table.private[0]: Modifying... [id=rtb-0e1db9bfba2e86daf]
+    module.vpc.aws_subnet.private[1]: Modifying... [id=subnet-0da8c6fc54bcca700]
+    module.vpc.aws_route_table.public[0]: Modifications complete after 0s [id=rtb-088893d0f63ae6ae2]
+    module.vpc.aws_internet_gateway.this[0]: Modifying... [id=igw-0a42a0a8b33bb9171]
+    module.vpc.aws_route_table.private[0]: Modifications complete after 0s [id=rtb-0e1db9bfba2e86daf]
+    module.vpc.aws_subnet.public[0]: Modifications complete after 0s [id=subnet-0242d8325c1411258]
+    module.vpc.aws_subnet.private[0]: Modifications complete after 0s [id=subnet-0406b1e1be0246d54]
+    module.vpc.aws_internet_gateway.this[0]: Modifications complete after 0s [id=igw-0a42a0a8b33bb9171]
+    module.vpc.aws_subnet.private[1]: Modifications complete after 0s [id=subnet-0da8c6fc54bcca700]
+    module.vpc.aws_eip.nat[0]: Modifying... [id=eipalloc-00e9979b2f14a9b77]
+    module.eks.aws_iam_policy.cluster_encryption[0]: Creation complete after 0s [id=arn:aws:iam::861814105207:policy/mh-fyp-eks-wFMZsm5Z-cluster-ClusterEncryption20250203032616588500000004]
+    module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]: Creating...
+    aws_efs_file_system.efs: Destruction complete after 3s
+    aws_efs_file_system.efs: Creating...
+    module.vpc.aws_eip.nat[0]: Modifications complete after 1s [id=eipalloc-00e9979b2f14a9b77]
+    module.vpc.aws_nat_gateway.this[0]: Modifying... [id=nat-0a2c160f99e36f111]
+    module.vpc.aws_nat_gateway.this[0]: Modifications complete after 0s [id=nat-0a2c160f99e36f111]
+    module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]: Creation complete after 1s [id=mh-fyp-eks-wFMZsm5Z-cluster-20250203032553942600000001-20250203032617809300000007]
+    module.eks.aws_security_group.cluster[0]: Creation complete after 1s [id=sg-0869b037f781256c0]
+    module.eks.aws_security_group.node[0]: Creation complete after 1s [id=sg-06025b703daae1f50]
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creating...
+    module.eks.aws_security_group_rule.node["egress_all"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Creating...
+    module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_self_all"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Creating...
+    aws_security_group.efs_security_group: Creation complete after 2s [id=sg-07071d8c70918f239]
+    module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Creation complete after 1s [id=sgrule-3527609920]
+    module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Creation complete after 1s [id=sgrule-2853805676]
+    module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Creation complete after 1s [id=sgrule-453077462]
+    module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creating...
+    module.eks.aws_security_group_rule.node["ingress_self_all"]: Creation complete after 2s [id=sgrule-4254759833]
+    module.eks.aws_security_group_rule.node["egress_all"]: Creation complete after 2s [id=sgrule-2240897126]
+    module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Creation complete after 3s [id=sgrule-2780692906]
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Creation complete after 4s [id=sgrule-1320893099]
+    module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Creation complete after 4s [id=sgrule-3240047201]
+    module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Creation complete after 4s [id=sgrule-2608620767]
+    aws_efs_file_system.efs: Creation complete after 5s [id=fs-078a7048b2c301c27]
+    module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Creation complete after 4s [id=sgrule-1773228432]
+    aws_efs_backup_policy.policy: Creating...
+    aws_efs_mount_target.efs_mount_target_2: Creating...
+    aws_efs_mount_target.efs_mount_target_1: Creating...
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Creation complete after 5s [id=sgrule-3940849988]
+    module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Creation complete after 5s [id=sgrule-776379637]
+    module.eks.aws_eks_cluster.this[0]: Creating...
+    aws_efs_backup_policy.policy: Creation complete after 2s [id=fs-078a7048b2c301c27]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [10s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [10s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [20s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [20s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [30s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [30s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [40s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [40s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [50s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [50s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [1m0s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [1m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m0s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [1m10s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [1m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m10s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Still creating... [1m20s elapsed]
+    aws_efs_mount_target.efs_mount_target_1: Still creating... [1m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m20s elapsed]
+    aws_efs_mount_target.efs_mount_target_2: Creation complete after 1m23s [id=fsmt-04d2ec3f1e7bed547]
+    aws_efs_mount_target.efs_mount_target_1: Creation complete after 1m23s [id=fsmt-0ac906803bf9d1fae]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [1m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [2m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [3m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [4m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [5m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [6m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m10s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m20s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m30s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m40s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [7m50s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Still creating... [8m0s elapsed]
+    module.eks.aws_eks_cluster.this[0]: Creation complete after 8m3s [id=mh-fyp-eks-wFMZsm5Z]
+    module.eks.data.aws_eks_addon_version.this["kube-proxy"]: Reading...
+    module.eks.data.aws_eks_addon_version.this["coredns"]: Reading...
+    module.eks.data.aws_eks_addon_version.this["eks-pod-identity-agent"]: Reading...
+    module.eks.data.aws_eks_addon_version.this["vpc-cni"]: Reading...
+    module.eks.aws_eks_access_entry.this["cluster_creator"]: Creating...
+    module.eks.data.tls_certificate.this[0]: Reading...
+    module.eks.time_sleep.this[0]: Creating...
+    module.eks.data.tls_certificate.this[0]: Read complete after 0s [id=02f0b3f30424129b8a14276375b6aebec81a5e17]
+    module.eks.aws_iam_openid_connect_provider.oidc_provider[0]: Creating...
+    module.eks.data.aws_eks_addon_version.this["kube-proxy"]: Read complete after 0s [id=kube-proxy]
+    module.eks.data.aws_eks_addon_version.this["eks-pod-identity-agent"]: Read complete after 0s [id=eks-pod-identity-agent]
+    module.eks.data.aws_eks_addon_version.this["coredns"]: Read complete after 1s [id=coredns]
+    module.eks.data.aws_eks_addon_version.this["vpc-cni"]: Read complete after 1s [id=vpc-cni]
+    module.eks.aws_eks_access_entry.this["cluster_creator"]: Creation complete after 1s [id=mh-fyp-eks-wFMZsm5Z:arn:aws:iam::861814105207:user/chanming]
+    module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]: Creating...
+    module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]: Creation complete after 0s [id=mh-fyp-eks-wFMZsm5Z#arn:aws:iam::861814105207:user/chanming#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy]
+    module.eks.aws_iam_openid_connect_provider.oidc_provider[0]: Creation complete after 2s [id=arn:aws:iam::861814105207:oidc-provider/oidc.eks.ap-southeast-1.amazonaws.com/id/5862339F7E77382B0A74D8C85BD42D31]
+    module.eks.time_sleep.this[0]: Still creating... [10s elapsed]
+    module.eks.time_sleep.this[0]: Still creating... [20s elapsed]
+    module.eks.time_sleep.this[0]: Still creating... [30s elapsed]
+    module.eks.time_sleep.this[0]: Creation complete after 30s [id=2025-02-03T03:34:57Z]
+    module.eks.module.eks_managed_node_group["one"].module.user_data.null_resource.validate_cluster_service_cidr: Creating...
+    module.eks.module.eks_managed_node_group["one"].module.user_data.null_resource.validate_cluster_service_cidr: Creation complete after 0s [id=4506423314006051376]
+    module.eks.module.eks_managed_node_group["one"].aws_launch_template.this[0]: Creating...
+    module.eks.module.eks_managed_node_group["one"].aws_launch_template.this[0]: Creation complete after 1s [id=lt-08afb7e4e64848ca8]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Creating...
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [10s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [20s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [30s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [40s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [50s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m0s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m10s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m20s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m30s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m40s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Still creating... [1m50s elapsed]
+    module.eks.module.eks_managed_node_group["one"].aws_eks_node_group.this[0]: Creation complete after 1m58s [id=mh-fyp-eks-wFMZsm5Z:node-group-1-2025020303345763040000000a]
+    module.eks.aws_eks_addon.this["kube-proxy"]: Creating...
+    module.eks.aws_eks_addon.this["coredns"]: Creating...
+    module.eks.aws_eks_addon.this["vpc-cni"]: Creating...
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Creating...
+    module.eks.aws_eks_addon.this["kube-proxy"]: Creation complete after 7s [id=mh-fyp-eks-wFMZsm5Z:kube-proxy]
+    module.eks.aws_eks_addon.this["coredns"]: Still creating... [10s elapsed]
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Still creating... [10s elapsed]
+    module.eks.aws_eks_addon.this["vpc-cni"]: Still creating... [10s elapsed]
+    module.eks.aws_eks_addon.this["coredns"]: Creation complete after 14s [id=mh-fyp-eks-wFMZsm5Z:coredns]
+    module.eks.aws_eks_addon.this["vpc-cni"]: Still creating... [20s elapsed]
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Still creating... [20s elapsed]
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Still creating... [30s elapsed]
+    module.eks.aws_eks_addon.this["vpc-cni"]: Still creating... [30s elapsed]
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Still creating... [40s elapsed]
+    module.eks.aws_eks_addon.this["vpc-cni"]: Still creating... [40s elapsed]
+    module.eks.aws_eks_addon.this["eks-pod-identity-agent"]: Creation complete after 44s [id=mh-fyp-eks-wFMZsm5Z:eks-pod-identity-agent]
+    module.eks.aws_eks_addon.this["vpc-cni"]: Creation complete after 44s [id=mh-fyp-eks-wFMZsm5Z:vpc-cni]
+    module.eks.aws_security_group_rule.cluster["ingress_nodes_443"] (deposed object 927cce0b): Destroying... [id=sgrule-3991927841]
+    module.eks.aws_security_group_rule.node["egress_all"] (deposed object 04898922): Destroying... [id=sgrule-2250989526]
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"] (deposed object d6e5d236): Destroying... [id=sgrule-1785397800]
+    module.eks.aws_security_group_rule.node["ingress_cluster_443"] (deposed object 746f42c4): Destroying... [id=sgrule-3986844362]
+    module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"] (deposed object e9e2b630): Destroying... [id=sgrule-2172802925]
+    module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"] (deposed object d2ee43f4): Destroying... [id=sgrule-4254499759]
+    module.eks.aws_cloudwatch_log_group.this[0] (deposed object 4864f132): Destroying... [id=/aws/eks/minghan-eks-cluster-eks-wFMZsm5Z/cluster]
+    module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"] (deposed object 2561e632): Destroying... [id=sgrule-2602521719]
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"] (deposed object e5b73c93): Destroying... [id=sgrule-3459555783]
+    module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"] (deposed object af3a8556): Destroying... [id=sgrule-4135540871]
+    module.eks.aws_cloudwatch_log_group.this[0]: Destruction complete after 0s
+    module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"] (deposed object 3137c3f8): Destroying... [id=sgrule-3844301990]
+    module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Destruction complete after 1s
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Destruction complete after 1s
+    module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"] (deposed object d6aab15d): Destroying... [id=sgrule-1060978449]
+    module.eks.aws_security_group_rule.node["ingress_self_all"] (deposed object 1c2a4d48): Destroying... [id=sgrule-2443960524]
+    module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Destruction complete after 1s
+    module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Destruction complete after 2s
+    module.eks.aws_security_group_rule.node["egress_all"]: Destruction complete after 2s
+    module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Destruction complete after 2s
+    module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Destruction complete after 3s
+    module.eks.aws_security_group_rule.node["ingress_cluster_443"]: Destruction complete after 3s
+    module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Destruction complete after 4s
+    module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Destruction complete after 4s
+    module.eks.aws_security_group_rule.node["ingress_self_all"]: Destruction complete after 4s
+    module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Destruction complete after 4s
+    module.eks.aws_security_group.cluster[0] (deposed object 5f805fa0): Destroying... [id=sg-01c9f8754d3e4815c]
+    module.eks.aws_security_group.node[0] (deposed object dbb128d2): Destroying... [id=sg-0ee0a1f7f0109b310]
+    module.eks.aws_security_group.cluster[0]: Destruction complete after 1s
+    module.eks.aws_security_group.node[0]: Destruction complete after 1s
+    
+    Apply complete! Resources: 39 added, 13 changed, 20 destroyed.
+    
+    Outputs:
+    
+    cluster_endpoint = "https://5862339F7E77382B0A74D8C85BD42D31.gr7.ap-southeast-1.eks.amazonaws.com"
+    cluster_name = "mh-fyp-eks-wFMZsm5Z"
+    cluster_security_group_id = "sg-0869b037f781256c0"
+    efs_id = "fs-078a7048b2c301c27"
+    region = "ap-southeast-1"
+    [INFO]: Terraform applied successfully
+    Raw Terraform output for 'cluster_name': mh-fyp-eks-wFMZsm5Z
+    Raw Terraform output for 'region': ap-southeast-1
+    region:ap-southeast-1, cluster_name:mh-fyp-eks-wFMZsm5Z
+    [INFO]: kubectl configured successfully
+    [INFO]: install_aws_nginx_controller: Applied resource from https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/aws/deploy.yaml successfully
+
+\end{lstlisting}

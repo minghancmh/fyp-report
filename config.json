@@ -1,7 +1,0 @@
-{
-    "region": "ap-southeast-1",
-    "prefix": "minghan-eks-cluster",
-    "architecture": "AL2_x86_64",
-    "ingressController": "aws-nginx-ingress-controller",
-    "requireEFS": "True"
-}
