@@ -1,0 +1,149 @@
+\chapter{Appendix G: \texttt{cloudkube} Publishing and Distribution}
+\label{appendix:cloudkube-distribution}
+
+The following shows the \texttt{setup.py} and \texttt{workflow.yml} files which are used in the publishing and distribution of \texttt{cloudkube}
+
+
+\begin{lstlisting}[xleftmargin=10pt, caption={\texttt{setup.py} file for Python Packaging}]
+setup(
+    name="cloudkube",
+    version="0.16.5",
+    author="Chan Ming Han",
+    email="chanminghan00@gmail.com",
+    description="minikube for the cloud",
+    python_requires=">=3.11",
+    packages=find_packages(),
+    entry_points={
+        "console_scripts": [
+            "cloudkube=cloudkube:main",
+        ],
+    },
+    install_requires=[
+        "boto3",
+        "python_terraform",
+        "kubernetes",
+        "requests",
+        "GitPython",
+    ],
+    package_data={"cloudkube": ["terraform/*"]},
+    include_package_data=True,
+)
+\end{lstlisting}
+
+\begin{lstlisting}[caption={\texttt{workflow.yml} file for \texttt{cloudkube} release}]
+name: Publish Python distribution to PyPI
+
+on: push
+
+jobs:
+  build:
+    name: Build distribution 
+    runs-on: ubuntu-latest
+    outputs:
+        tag_ver: ${{ steps.bump_ver.outputs.tag_ver }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+      - name: Install bump for automatic versioning
+        run: pip install bump
+      - name: Bump Version
+        id: bump_ver
+        run: |
+          TAG_VER=$(bump)
+          echo "TAG_VER=$TAG_VER" >> $GITHUB_ENV
+          echo "::set-output name=tag_ver::$TAG_VER"
+      - name: Commit Version Bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add setup.py
+          git commit -m "Bump version via GitHub Actions"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push origin main
+
+      - name: Build a binary wheel and a source tarball
+        run: python3 -m build
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to-pypi:
+    name: >-
+      Publish Python distribution to PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/cloudkube
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: >-
+      Sign the Python distribution with Sigstore
+      and upload them to GitHub Release
+    needs:
+      - build
+      - publish-to-pypi
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # IMPORTANT: mandatory for making GitHub Releases
+      id-token: write # IMPORTANT: mandatory for sigstore
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Sign the dists with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: >-
+            ./dist/*.tar.gz
+            ./dist/*.whl
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create
+          "${{ needs.build.outputs.tag_ver }}"
+          --repo "$GITHUB_REPOSITORY"
+          --notes ""
+      - name: Upload artifact signatures to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        # Upload to GitHub Release using the `gh` CLI.
+        # `dist/` contains the built packages, and the
+        # sigstore-produced signatures and certificates.
+        run: >-
+          gh release upload
+          "${{ needs.build.outputs.tag_ver }}" dist/**
+          --repo "$GITHUB_REPOSITORY"
+
+\end{lstlisting}
