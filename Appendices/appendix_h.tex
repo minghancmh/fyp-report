@@ -1,0 +1,149 @@
+\chapter{Appendix H: Kubernetes Manifest for SpeechLab ASR Application}
+\label{appendix:asr-archi}
+
+The following shows the Kubernetes Manifest for deploying the SpeechLab ASR Application. 
+
+\begin{lstlisting}[caption={Kubernetes Manifest for deploying SpeechLab ASR Application.}]
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: decoding-sdk
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: decoding-sdk-config
+    namespace: decoding-sdk
+data:
+    INSTANCE_NUM: "2"
+    MASTER: "decoding-sdk-server:8010"
+    MODEL_DIR: "genericasr_apr2021"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: model-storage
+spec:
+    capacity:
+    storage: 5Gi
+    accessModes:
+    - ReadWriteMany # EFS supports multi-node access
+    storageClassName: efs-sc
+    csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-015b986c551bc3640
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: efs-sc
+provisioner: efs.csi.aws.com
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: model-storage-claim
+    namespace: decoding-sdk
+spec:
+    accessModes:
+    - ReadWriteMany
+    storageClassName: efs-sc
+    resources:
+    requests:
+        storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: decoding-sdk-server
+    namespace: decoding-sdk
+spec:
+    replicas: 1
+    selector:
+    matchLabels:
+        app: decoding-sdk-server
+    template:
+    metadata:
+        labels:
+        app: decoding-sdk-server
+    spec:
+        imagePullSecrets:
+        - name: dockerhub-secret
+        containers:
+        - name: decoding-sdk-server
+            image: minghan2000/decoding-sdk:2.0
+            ports:
+            - containerPort: 8010
+            command: ["/home/speechuser/start_master.sh", "-p", "8010"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: decoding-sdk-server
+    namespace: decoding-sdk
+spec:
+    selector:
+    app: decoding-sdk-server
+    ports:
+    - protocol: TCP
+        port: 8010
+        targetPort: 8010
+    type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: decoding-sdk-worker
+    namespace: decoding-sdk
+spec:
+    replicas: 2
+    selector:
+    matchLabels:
+        app: decoding-sdk-worker
+    template:
+    metadata:
+        labels:
+        app: decoding-sdk-worker
+    spec:
+        imagePullSecrets:
+        - name: dockerhub-secret
+        containers:
+        - name: decoding-sdk-worker
+            image: minghan2000/decoding-sdk:2.0
+            envFrom:
+            - configMapRef:
+                name: decoding-sdk-config
+            volumeMounts:
+            - name: model-storage
+                mountPath: /opt/models/
+            command:
+            [
+                "/home/speechuser/start_worker.sh",
+                "-m",
+                "decoding-sdk-server",
+                "-p",
+                "8010",
+            ]
+        initContainers:
+        - name: copy-models
+            image: amazonlinux
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+                yum install -y aws-cli
+                aws s3 cp s3://mh-decoding-sdk-s3-models/models/ /opt/models/ --recursive
+            volumeMounts:
+            - name: model-storage
+                mountPath: /opt/models/
+        volumes:
+        - name: model-storage
+            persistentVolumeClaim:
+            claimName: model-storage-claim
+    
+    
+\end{lstlisting}

@@ -267,4 +267,17 @@ Often times, it is important for compute instances to automatically scale with l
 \end{itemize}
 
 \subsection{minikube}
-minikube is a way for one to quickly set up a local Kubernetes cluster. It is compatible with macOS, Linux and Windows. The main goal of minikube is to help application developers do quick testing of their Kubernetes deployments locally, as well as a tool used for learning by new Kubernetes users \cite{minikube-docs}. By default, minikube creates a one-node cluster locally, and supports addons such as ingress controllers. As we will see in the following chapter, cloudkube functionality closely mirrors that of minikube, supporting the objective of cloudkube which is to provide a quick and easy testing environment for Kubernetes developers in the cloud. 
+minikube is a way for one to quickly set up a local Kubernetes cluster. It is compatible with macOS, Linux and Windows. The main goal of minikube is to help application developers do quick testing of their Kubernetes deployments locally, as well as a tool used for learning by new Kubernetes users \cite{minikube-docs}. By default, minikube creates a one-node cluster locally, and supports addons such as ingress controllers. As we will see in the following chapter, cloudkube functionality closely mirrors that of minikube, supporting the objective of cloudkube which is to provide a quick and easy testing environment for Kubernetes developers in the cloud.
+
+\section{Past FYPs}
+Past FYPs have worked on the deployment of Speech Recognition Systems to on-prem bare metal resources \cite{yap-2023}, as well as the AWS Cloud.
+Benjamin Chen and Poh Kai Kiat worked to set up the CI/CD pipelines for versioning of the ASR system using Jenkins, ArgoCD and Gitlab \cite{chen-2021} \cite{poh-2022}. 
+Tjandy Putra's work helped to bolster security measures through Kyverno and Falco \cite{putra-2023}. Ma Xiao helped to set up the 
+barebones deployment of the Speech Recognition System on the AWS cloud via the AWS console \cite{ma-2021}. Lastly, Song Yu and Lee Kai Shern
+introduced terraform to help handle the infrastructure provisioning \cite{song-yu-2023} \cite{lee-2022}. 
+
+These FYPs have done great work in deploying the ASR application. However, the deployment process is inherently tightly coupled with the 
+ASR application, and changes to source code or structure of the application requires significant recalibration of cloud resources. As such, this 
+FYP aims abstract away the process of infrastructure provisioning, and provide an automated tool for a Kubernetes cluster to be spun up easily in the cloud. 
+As a stretch goal, this FYP also aims to be extendable to other SpeechLab applications. This will allow SpeechLab developers to focus on core application logic, and 
+simply call the \texttt{cloudkube} API to spin up a Kuberenetes cluster, and deploy their applications. 

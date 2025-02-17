@@ -104,6 +104,60 @@ Provisioning of these infrastructure resources require a deep understanding of c
 \section{Proposed Solution}
 The proposed solution, \texttt{cloudkube}, aims to alleviate the above challenges. Besides having an intuitive user interface, \texttt{cloudkube} leverages on the strengths of existing IaC frameworks such as terraform. This allows users to abstract in-depth knowledge about terraform and the cloud away, and provides a quick and easy way to deploy a containerised application to the cloud. 
 
+
+\subsection{Infrastructure}
+Initially, \texttt{cloudkube} was designed to host the SpeechLab ASR Application, focusing on a specific set of infrastructure needs. However,
+as the system evolved, \texttt{cloudkube} was extended to support multiple applications through providing genering infrastructure resources that could be 
+leveraged across different workloads. This subsection will detail the system architecture of the SpeechLab ASR Application. We will then discuss the resources to be 
+provisioned to satisfy each of the Kubernetes components.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/asr-archi.png}
+    \caption{Architecture Diagram for SpeechLab ASR Application}
+    \label{fig:asr-archi}
+\end{figure}
+
+Figure \ref{fig:asr-archi} shows a simplified architecture diagram for the SpeechLab ASR Application. The Kubernetes manifest for 
+deploying this application is appended in Appendix \ref{appendix:asr-archi}. 
+The decoding-sdk images are pushed to Dockerhub, and the machine learning models are hosted within an AWS S3 bucket. On application of the 
+Kubernetes manifest, the images are pulled from Dockerhub. These images represent the code that is to be run in the master and worker pods.
+Following this, an init container pulls the models from the S3 bucket storage into the Persistent Volume in the Kubernetes environment, which allows
+master and worker pods to use these models for the live transcription. The ingress then controls the routing to the decoding-sdk server, which
+exposes the application through a Kubernetes service. Users are able to reach this provided endpoint with their audio file, and receive a live transcription.
+
+To satisfy these Kubernetes components, multiple different types of infrastructure need to be provisioned within the cloud. Here, we note that \texttt{cloudkube} only
+takes care of provisioning infrastructure for Kubernetes components. As such, the bucket storage is not provisioned by  \texttt{cloudkube}. Table \ref{tab:components} shows
+a mapping of each component to the corresponding infrastructure provisioned.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|p{5cm}|p{5cm}|p{4cm}|}
+        \hline
+        \textbf{Kubernetes Resource} & \textbf{Purpose} & \textbf{Provisioned Infrastructure}\\
+        \hline
+        \texttt{Namespace} & Logical grouping of resources within the cluster & - \\
+        \hline
+        \texttt{ConfigMap} & Stores configuration data as key-value pairs, injected into pods  & -\\
+        \hline 
+        \texttt{PersistentVolume (PV)} & Provides persistent storage within the cluster, ensuring data persistence across pod lifecycles. Typically backed by external storage. & AWS Elastic File System \\
+        \hline
+        \texttt{PersistentVolumeClaim (PVC)} & Requests dynamically allocated storage from an EFS-backed PV  & -\\
+        \hline
+        \texttt{StorageClass} & Defines dynamic storage provisioning using EFS & -\\
+        \hline
+        \texttt{Deployment} & Manages pod replicas and lifecycle of pods. These pods are the smallest unit in Kubernetes. Pods run on nodes, which are EC2 machines in the cloud. & AWS Elastic Compute Cloud \\
+        \hline
+        \texttt{Service} & Responsible for exposing internal services. & AWS Elastic Load Balancer (ELB) \\
+        \hline
+        \texttt{Ingress} & Configure routing within the cluster, are only effective if ingress controller is present in the cluster. & NGINX Ingress Controller \\
+        \hline
+    \end{tabular}
+    \caption{Mapping of Kubernetes Resources to Provisioned Infrastructure}
+    \label{tab:components}
+\end{table}
+
+
 \subsection{Key Principles}
 \texttt{cloudkube} is built on three main principles: 
 \vspace{-1em}
