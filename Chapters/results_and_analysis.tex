@@ -2,7 +2,7 @@
 
 In this chapter, we will do a comparison between deploying a Kubernetes workload via the traditional approach and via \texttt{cloudkube}. While \texttt{cloudkube} was initially developed
 to meet the needs of the ASR application, this FYP has met the stretch goal of making \texttt{cloudkube} extensible to different types of Kubernetes workloads. Consequently, the subsequent sections
-will show the testing and deployment of the ASR application as well as a multi-service, fullstack application to infrastructure provisioned by \texttt{cloudkube}, 
+will show the testing and deployment of the ASR application as well as a multi-service, fullstack application to infrastructure provisioned by \texttt{cloudkube}. 
 
 \section{Deployment Timeline}
 This subsection will compare the deployment timeline using \texttt{cloudkube} vs the traditioanal manual approach, highlighting the time savings and operational benefits. 
@@ -83,3 +83,86 @@ functional Kubernetes cluster in the cloud.  The full workflow with \texttt{clou
     \caption{Steps to Spin Up a Kubernetes Cluster Using \texttt{cloudkube} and Estimated Time}
     \label{table:k8s-cluster-cloudkube}
 \end{table}
+
+\section{Deployment of SpeechLab ASR Application}
+
+This section will cover the deployment of the SpeechLab ASR Application via \texttt{cloudkube}. In this evaluation, we will walkthrough the end-to-end deployment process, as well as testing
+the API exposed by the SpeechLab ASR Application to ensure that the infrastructure provisioned suitably fits the needs of the application.
+
+First, \texttt{cloudkube} is downloaded via \texttt{pip install cloudkube}. We then configure our cloud credentials using \texttt{aws configure}. Pictures for this step
+are omitted form this report to keep the aws credentials secret. 
+Next, based on the Kubernetes manifest of the SpeechLab ASR Application (Appendix \ref{appendix:asr-archi}), we see that persistent volumes are required. 
+The ASR application also runs on \texttt{x86} architecture as dictated by the decoding-sdk.
+\texttt{cloudkube init} is then run, and \texttt{cloudkube} is configured (via option \texttt{2}) with \texttt{x86} machines, and PersistentVolume setup \ref{fig:cloudkube-init-2}. 
+At this point, configuring the cluster has taken no more than 5 minutes. Next, option \texttt{3} is run, and \texttt{cloudkube} begins provisioning our Kubernetes cluster in the cloud. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/cloudkube-init-2.png}
+    \caption{Configuring Kubernetes cluster for SpeechLab ASR Application via \texttt{cloudkube}}
+    \label{fig:cloudkube-init-2}
+\end{figure}
+
+The cluster creation process takes approximately 10 minutes. Once the Kubernetes cluster is successfully created (Figure \ref{fig:cloudkube-success}), we can then navigate to the Kubernetes manifests
+to run \texttt{kubectl apply -f manifest.yaml}. At this point, our application is deployed to the cloud, and ready for testing. It should be noted that the 
+images are stored on dockerhub, while the models are pulled from an S3 bucket in our AWS cloud. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/cloudkube-success.png}
+    \caption{\texttt{cloudkube} Successful Provisioning}
+    \label{fig:cloudkube-success}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig/asr-apply.png}
+    \caption{Output of \texttt{kubectl get pods -A} for SpeechLab ASR Application}
+    \label{fig:asr-apply}
+\end{figure}
+
+As we can see from the output of \texttt{kubectl get pods -A} (Figure \ref{fig:asr-apply}), which queries the cluster for all pods in all namespaces, we see that all the pods have status of 
+\texttt{RUNNING}, meaning that they have successfully started. Of note are the pods in the \texttt{decoding-sdk} namespace, which show the successful starting of the
+master pod (\texttt{decoding-sdk-server-6889cd66c5-84d54}) as well as the 2 worker pods (\texttt{decoding-sdk-worker-5bdd4bd4db-hv8wp} and \texttt{decoding-sdk-worker-5bdd4bd4db-k7fmh}).
+The \texttt{kube-system} namespace also contains pods relevant for mounting of the PersistentVolume. These are the \texttt{efs-csi-controller} and \texttt{efs-csi-node} pods. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/asr-pod-describe.png}
+    \caption{Output of \texttt{kubectl describe pod decoding-sdk-worker-5bdd4bd4db-k7fmh -n decoding-sdk}}
+    \label{fig:asr-describe-pod}
+\end{figure}
+
+Figure \ref{fig:asr-describe-pod} shows event log for one of the worker pods. In this event log, we see that a container \texttt{copy-models} is started.
+This container pulls the images from the existing S3 bucket that we have in the AWS cloud into the machine. The decoding-sdk image is then started.
+
+
+All of the above outputs show that the decoding-sdk image has successfully started, and the SpeechLab ASR Application is successfully deployed. Lastly, we will
+hit the endpoint of the application to confirm that the live transcription works. To do this, we first need to view the load balancer exposed to the public internet.
+This can be done via \texttt{kubectl get services}. As we can see from the output of Figure \ref{fig:asr-svcs}, the external IP of the decoding-sdk server is 
+\texttt{ad40289733a2844058b1f62d619b7c8e-1622439313.ap-southeast-1.elb.amazonaws.com}. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/asr-services.png}
+    \caption{Output of \texttt{kubectl get services -A}}
+    \label{fig:asr-svcs}
+\end{figure}
+
+Finally, we can hit the endpoint and obtain our live transcription as shown in Figure \ref{fig:live-transcribe}. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/live-transcribe.png}
+    \caption{Live transcription with SpeechLab ASR Application}
+    \label{fig:live-transcribe}
+\end{figure}
+
+All in all, this deployment process took no longer than 20 minutes. Using \texttt{cloudkube}, developers are able to quickly spin up a Kubernetes cluster in the cloud and test their application in a scalable and isolated environment.
+
+
+
+
+
+
+
