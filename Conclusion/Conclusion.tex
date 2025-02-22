@@ -1,16 +1,26 @@
 %=== Conclusion and Recommendations ===
 
 \chapter{4. Conclusion and Future Work}
-Updates to this chapter will be included in the final report.
+As supported by our results, \texttt{cloudkube} significantly accelerates development time in Kubernetes by simplifying cluster provisioning, deployment,
+and management. With its streamlined interface and automated setup, developers are able to rapidly spin up fully functional Kubernetes clusters without worrying
+about complex configurations. This reduces the overhead acssociated with infrastructure management, allowing teams to focus on writing, testing, and scaling their applications.
+Through providing a seamless and efficient development worklow, \texttt{cloudkube} empowers teams to iterate faster, deploy more reliably, and bring applications to market with greater agility and velocity. 
 
-\section{Project Summary}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-\section{Areas of Improvement}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 \section{Future Works}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+\subsection{Additional Support for Add-ons}
+\texttt{cloudkube} is built generically to support the SpeechLab ASR Application. A multi-service application was also tested here. However, more complex setup might 
+be required based on different types of application requirements. In future, commands can be added to the commands module of \texttt{cloudkube} to allow for the 
+addition of more niche Kubernetes add-ons such as Pod Identity Agents, or drivers for run time monitoring. 
+
+\subsection{Multi-Cloud Support}
+While \texttt{cloudkube} is built to be extensible to different cloud providers, the current version of \texttt{cloudkube} only supports AWS cloud due to limited
+time and resources for the completion of this FYP. In future, \texttt{cloudkube} can be extended to other cloud providers to provide a just as simple set up of a Kuberenetes cluster
+in a different cloud provider.
+
+\subsection{CI/CD Integrations}
+Currently, \texttt{cloudkube} is built to be run locally on a machine. In future, \texttt{cloudkube} can be integrated into CI/CD pipelines to automate infrastructure
+mutation and provisioning. 
 
 %=== END OF CONCLUSION ===
 \newpage
