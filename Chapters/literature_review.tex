@@ -120,13 +120,14 @@ A Kubernetes cluster typically comprises the Control Plane as well as multiple W
             \item \textit{kube-api-server:} The Kubernetes API Server is the main module within the master node which receives all REST requests for modifications, thereby serving as the frontend to the cluster \cite{bindlish-2021}. It acts as an interface for interaction with the cluster. 
             \item \textit{kube-controller-manager:} The kube-controller-manager runs a distict number of daemon processes, which help to regulate the shared state of the cluster, as well as perform routine tasks. When changes in configurations occur, the kcm is responsible for spotting the change and working toward the new desired state \cite{bindlish-2021}. 
             \item \textit{Kube-scheduler:}  The Kubernetes scheduler helps to schedule the pods on the various nodes based on resource utilization \cite{bindlish-2021}. The kube-scheduler is aware of all the resources available, and is responsible for allocating pods to nodes in an efficient manner to avoid resource exhaustion. Should no resources be available, the kube-scheduler puts pods in a pending state until resources are available again.
+            \item \textit{etcd:} The etcd is a highly available, distributed key-value store that is use by Kubernetes to store cluster configuration data and state information. It keeps track of all cluster components such as nodes, pods, deployments and network configurations. 
         \end{enumerate}
         \item \textbf{Worker Nodes}
         \begin{enumerate}
-            \item The Kubernetes worker node, is a worker machine in the Kubernetes cluster. There can be multiple worker nodes in a Kubernetes cluster. Each node is responsible for running pods, and is managed by the master node. 
+            \item The Kubernetes worker node, is a worker machine in the Kubernetes cluster. There can be multiple worker nodes in a Kubernetes cluster. Each node is responsible for running pods, and is managed by the master node. These worker nodes are the workhorses of the Kubernetes cluster, and all application execution logic is carried out in these worker nodes. 
             \item \textit{kubelet:} The kubelet is the main service on a node, which regularly takes in pod specifications through the kube-api-server. The Kubelet is responsible for ensuring that pods and containers are healthy, and running in the desired state \cite{bindlish-2021}. The Kubelet is also responsible for health checks. 
             \item \textit{kube-proxy}: The kube-proxy is a service that runs on each worker node, that deals with networking. It is responsible for exposing services to the external world, or to the rest of the cluster. It performs request forwarding to the correct pods across various isolated networks in a cluster \cite{bindlish-2021}.
-            \item \textit{Container runtime:} The container runtime is responsible for pulling images from a container image registry (i.e. Dockerhub, Amazon AWS ECR), and starting and stopping containers. The most common plugin used for this us Docker \cite{bindlish-2021}.
+            \item \textit{Container runtime:} The container runtime is responsible for pulling images from a container image registry (i.e. Dockerhub, Amazon AWS ECR), and starting and stopping containers. The most common plugin used for this is Docker \cite{bindlish-2021}.
         \end{enumerate}
         \item \textbf{Pods}
         \begin{enumerate}
@@ -138,12 +139,14 @@ A Kubernetes cluster typically comprises the Control Plane as well as multiple W
 
 Another concept relevant to the development of \texttt{cloudkube} is networking in Kubernetes. The following section will two main networking concepts in Kubernetes, which will become relevant to our implementation in Chapter 4.
 \begin{enumerate}
+\item \textbf{Service: }A service in Kubernetes is a logical abstraction that provides stable networking for a group of pods running in a cluster. It enables communication between Pods, and ensures consistent access to applications, even if individual pods are created or deleted. These services can act as load balancers to distribute traffic across multiple pods. Pods with type \texttt{ClusterIP} work to expose services internally whthin the cluster. Pods with type \texttt{NodePort} exposes a service on a static port on each node, and pods with type \texttt{LoadBalancer} provisions an external load balancer in the cloud to publicly expose services. 
 \item \textbf{Ingress: }A Kubernetes ingress object is an API object that manages external access to services in a cluster, typically through HTTP/HTTPS. The Ingress object allows us to map traffic to different backends based on rules defined via the Kubernetes API. 
-\item \textbf{Ingress Controller: }a.	In order for an Ingress to work in the cluster, there must be an ingress controller running. Ingress controllers are not started automatically with a cluster, and requires a one to be specified and provisioned for ingress resources to work. 
+\item \textbf{Ingress Controller: }In order for an Ingress to work in the cluster, there must be an ingress controller running. Ingress controllers are not started automatically with a cluster, and requires a one to be specified and provisioned for ingress resources to work. 
 \end{enumerate}
 
 \textbf{\textit{Storage in Kubernetes}}
-Lastly, this section will detail how kubernetes handles ephemeral and persistent storage. Similarly, this becomes relevant to our implementation as detailed in Chapter 4.
+
+Lastly, this section will detail how Kubernetes handles ephemeral and persistent storage. Similarly, this becomes relevant to our implementation as detailed in Chapter 4.
 \begin{enumerate}
     \item \textbf{Volumes: } Volumes in Kubernetes provide a way for containers in a pod to access and share data via the filesystem. This can be used for data sharing between two different containers in the same pod, or even between two different pods. There are two broad categories of volumes. Ephemeral volume types have the lifetime of a pod, and follow the lifecycle of a pod, while persistent volumes exist beyond the lifetime of a pod.  
     \item \textbf{Persistent Volumes (PV): } A persistent volume is a piece of storage in the cluster that has been provisioned by the developer. The data in the PV remains even after pods are destroyed or recreated. 
@@ -152,6 +155,14 @@ Lastly, this section will detail how kubernetes handles ephemeral and persistent
 
 \section{Infrastructure and Cloud}
 This chapter details some of the key cloud infrastructure that is provisioned in order to host speech applications. For a proof of concept, and due to limited access to various clouds, everything in this paper is hosted on the AWS cloud. However, it should be noted that many of these concepts (such as VPC, subnets, load balancers etc.) are similar in other clouds, and \texttt{cloudkube} is extendable to other cloud providers as well. Each subsection will discuss the main uses of each of these components, and briefly detail the corresponding names of these components in AWS, Microsoft Azure Cloud, as well as Google Cloud Provider.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/vpc-subnets.png}
+    \caption{Relationship between VPC, Subnets, and other basic cloud componenets}
+    \label{fig:vpc-subnets}
+\end{figure}
+
 
 \subsection{Virtual Private Cloud (VPC)}
 A virtual private cloud allows the creation of logically isolated sections of the cloud where different resources can be launched in a user-defined virtual network. Developers have full control over the virtual networking environment, including the selection of IP address ranges, creation of subnets, as well as configuration of route tables and network gateways. There will be mentions of some VPC related terminology in the following chapters, all of which are defined here.

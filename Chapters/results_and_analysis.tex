@@ -134,10 +134,10 @@ The \texttt{kube-system} namespace also contains pods relevant for mounting of t
 \end{figure}
 
 Figure \ref{fig:asr-describe-pod} shows event log for one of the worker pods. In this event log, we see that a container \texttt{copy-models} is started.
-This container pulls the images from the existing S3 bucket that we have in the AWS cloud into the machine. The decoding-sdk image is then started.
+This container pulls the images from the existing S3 bucket that we have in the AWS cloud into the machine. The decoding-sdk server is then started.
 
 
-All of the above outputs show that the decoding-sdk image has successfully started, and the SpeechLab ASR Application is successfully deployed. Lastly, we will
+All of the above outputs show that the decoding-sdk server has successfully started, and the SpeechLab ASR Application is successfully deployed. Lastly, we will
 hit the endpoint of the application to confirm that the live transcription works. To do this, we first need to view the load balancer exposed to the public internet.
 This can be done via \texttt{kubectl get services}. As we can see from the output of Figure \ref{fig:asr-svcs}, the external IP of the decoding-sdk server is 
 \texttt{ad40289733a2844058b1f62d619b7c8e-1622439313.ap-southeast-1.elb.amazonaws.com}. 

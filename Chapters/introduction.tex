@@ -13,7 +13,7 @@ a lot of configuration. This process can take hours, or even days, depending on 
 cloud integration, there is a growing need for simplified, automated provisioning solutions that reduce setup time and eliminate operational friction.
 
 As such, for this final year project, I have decided to build \texttt{cloudkube}, which steamlines the provisioning of Kubernetes clusters in the cloud, enabling users to spin up fully
-configured clusters in teh cloud within minutes. By abstracting away the complexities of infrastructure management, \texttt{cloudkube} allows developers to focus on deploying applications rather 
+configured clusters in the cloud within minutes. By abstracting away the complexities of infrastructure management, \texttt{cloudkube} allows developers to focus on deploying applications rather 
 than managing the underlying infrastructure. This report explores the design, implementation, and impact of \texttt{cloudkube} in accelerating Kubernetes adoption while maintaining the flexibility
 and robustness required for production grade deployments.
 
@@ -93,47 +93,47 @@ types of Kubernetes workloads.
     \item \textbf{Optimized workflow for copying of models into compute worker instances:} The previous workflow for copying of the models into the EC2 worker instances was via secure copy \texttt{scp}. In this project, a more streamlined process was developed, and models were automatically pulled from cloud storage into compute instances \cite{song-yu-2023}.  
 \end{enumerate}
 \newpage
-\section{Project Schedule}
-The project schedule is presented in Table \ref{table:project_schedule}. A Gantt chart for the project schedule is shown in Figure \ref{fig:gantt_chart}. It should be noted that these start and end dates serve as rough guidelines, especially for the implementation phase of the project.
-\ref{table:project_schedule}
+% \section{Project Schedule}
+% The project schedule is presented in Table \ref{table:project_schedule}. A Gantt chart for the project schedule is shown in Figure \ref{fig:gantt_chart}. It should be noted that these start and end dates serve as rough guidelines, especially for the implementation phase of the project.
+% \ref{table:project_schedule}
 
-\begin{table}[h!]
-\centering
-\begin{tabular}{|c|l|c|c|}
-\hline
-\textbf{Index} & \textbf{Task Name} & \textbf{Start Date} & \textbf{End Date} \\ \hline
-\multicolumn{4}{|c|}{\textbf{Preparation Phase}} \\ \hline
-1 & Literature Review & 31 May 2024 & 30 Jul 2024 \\ \hline
-2 & Requirements Analysis & 14 Jun 2024 & 15 Jul 2024 \\ \hline
-3 & Requirements Refinement & 15 Jul 2024 & 30 Jul 2024 \\ \hline
-4 & System Design Development and Refinement & 15 Jul 2024 & 30 Sept 2024 \\ \hline
-\multicolumn{4}{|c|}{\textbf{Implementation Phase}} \\ \hline
-5 & Optimizing ASR Kubernetes Deployment & 1 Oct 2024 & 7 Oct 2024 \\ \hline
-6 & Provisioning Infrastructure for ASR & 7 Oct 2024 & 9 Oct 2024 \\ \hline
-7 & Development of main CLI interface of \texttt{cloudkube} & 1 Oct 2024 & 31 Oct 2024 \\ \hline
-8 & Ingress Controller Implementation & 1 Nov 2024 & 15 Nov 2024 \\ \hline
-9 & Persistent Volumes Implementation & 15 Nov 2024 & 29 Nov 2024 \\ \hline
-10 & \texttt{cloudkube} interactive setup wizard & 15 Nov 2024 & 29 Nov 2024 \\ \hline
-11 & \texttt{cloudkube} commands setup & 2 Dec 2024 & 16 Dec 2024 \\ \hline
-\multicolumn{4}{|c|}{\textbf{Testing Phase}} \\ \hline
-12 & ASR Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
-13 & Multi Service Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
-\multicolumn{4}{|c|}{\textbf{Documentation Phase}} \\ \hline
-14 & Project Proposal & 12 Aug 2024 & 2 Sept 2024 \\ \hline
-15 & Interim Report & 16 Dec 2024 & 30 Jan 2025 \\ \hline
-16 & Final Report & 30 Jan 2025 & 24 Mar 2025 \\ \hline
-17 & Presentation & 24 Mar 2025 & 14 May 2025 \\ \hline
-\end{tabular}
-\caption{Project Schedule}
-\label{table:project_schedule}
-\end{table}
+% \begin{table}[h!]
+% \centering
+% \begin{tabular}{|c|l|c|c|}
+% \hline
+% \textbf{Index} & \textbf{Task Name} & \textbf{Start Date} & \textbf{End Date} \\ \hline
+% \multicolumn{4}{|c|}{\textbf{Preparation Phase}} \\ \hline
+% 1 & Literature Review & 31 May 2024 & 30 Jul 2024 \\ \hline
+% 2 & Requirements Analysis & 14 Jun 2024 & 15 Jul 2024 \\ \hline
+% 3 & Requirements Refinement & 15 Jul 2024 & 30 Jul 2024 \\ \hline
+% 4 & System Design Development and Refinement & 15 Jul 2024 & 30 Sept 2024 \\ \hline
+% \multicolumn{4}{|c|}{\textbf{Implementation Phase}} \\ \hline
+% 5 & Optimizing ASR Kubernetes Deployment & 1 Oct 2024 & 7 Oct 2024 \\ \hline
+% 6 & Provisioning Infrastructure for ASR & 7 Oct 2024 & 9 Oct 2024 \\ \hline
+% 7 & Development of main CLI interface of \texttt{cloudkube} & 1 Oct 2024 & 31 Oct 2024 \\ \hline
+% 8 & Ingress Controller Implementation & 1 Nov 2024 & 15 Nov 2024 \\ \hline
+% 9 & Persistent Volumes Implementation & 15 Nov 2024 & 29 Nov 2024 \\ \hline
+% 10 & \texttt{cloudkube} interactive setup wizard & 15 Nov 2024 & 29 Nov 2024 \\ \hline
+% 11 & \texttt{cloudkube} commands setup & 2 Dec 2024 & 16 Dec 2024 \\ \hline
+% \multicolumn{4}{|c|}{\textbf{Testing Phase}} \\ \hline
+% 12 & ASR Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
+% 13 & Multi Service Kubernetes Workload & 16 Dec 2024 & 15 Jan 2025 \\ \hline
+% \multicolumn{4}{|c|}{\textbf{Documentation Phase}} \\ \hline
+% 14 & Project Proposal & 12 Aug 2024 & 2 Sept 2024 \\ \hline
+% 15 & Interim Report & 16 Dec 2024 & 30 Jan 2025 \\ \hline
+% 16 & Final Report & 30 Jan 2025 & 24 Mar 2025 \\ \hline
+% 17 & Presentation & 24 Mar 2025 & 14 May 2025 \\ \hline
+% \end{tabular}
+% \caption{Project Schedule}
+% \label{table:project_schedule}
+% \end{table}
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=\textwidth]{fig/gantt_chart.png}
-    \caption{Gantt Chart for Project Schedule}
-    \label{fig:gantt_chart}
-\end{figure}
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=\textwidth]{fig/gantt_chart.png}
+%     \caption{Gantt Chart for Project Schedule}
+%     \label{fig:gantt_chart}
+% \end{figure}
 
 \section{Report Organisation}
 This report is structured into 5 different chapters, each detailing different aspects of the project.
