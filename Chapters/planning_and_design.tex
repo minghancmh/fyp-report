@@ -1,15 +1,144 @@
-\chapter{Planning and Design}
+\chapter{Chapter 3: Planning and Design}
 With the rapid adoption of containerisation technologies, organizations are increasingly turning to containers for their scalability, portability, and efficiency in deploying modern applications \cite{gartner-2024}. This shift has prompted cloud providers to develop managed container solutions, simplifying the orchestration of containerized workloads. 
 
 In this chapter, we will detail the current approach taken in deploying a containerized application to the cloud platform. We will then analyse some of its pitfalls, and show how the proposed solution, \texttt{cloudkube}, aims to solve, and alleviate some of these issues. Mainly, each of these subsections will detail the number of steps it takes to get a working container management system up and running, as well as the amount of configuration required. We will then see the much quicker development workflow that \texttt{cloudkube} offers.
 
 \section{Traditional Approaches}
 Within the AWS ecosystem, there are two primary services offering container orchestration solutions. They are the AWS Elastic Container Service (ECS), as well as a managed Kubernetes service, the AWS Elastic Kubernetes Service (EKS). With 96\% of companies who use containerisation in production opting for Kubernetes for container orchestration \cite{unlu-2024}, this report will mainly focus on deploying a containerized workload on Kubernetes. That said, AWS ECS will be included in our analysis for completeness. 
+Before the setup of ECS/EKS, there are 3 main steps that a developer has to take. This would be \(1\) Configuring the network, \(2\) Configuring the compute, and \(3\) Configuring the storage layer. This chapter will discuss the various configurations necessary in subsections 3.1.1 - 3.1.3. Finally, we will see how to
+deploy our applications to ECS in section 3.1.4, and to EKS in section 3.1.5. 
+
+\subsection{Network Configuration}
+The first step in deploying a containerised workload to the cloud would be to configure the network. This includes configuring VPC and Subnet settings, as well as their related Access Control Lists, Security Groups, and routing within the cloud. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/vpc-subnets.png}
+    \caption{Relationship between VPC, Subnets, and other basic cloud components}
+    \label{fig:vpc-subnets}
+\end{figure}
+
+
+\subsubsection{Virtual Private Cloud (VPC)}
+A virtual private cloud allows the creation of logically isolated sections of the cloud where different resources can be launched in a user-defined virtual network. Developers have full control over the virtual networking environment, including the selection of IP address ranges, creation of subnets, as well as configuration of route tables and network gateways. There will be mentions of some VPC related terminology in the following chapters, all of which are defined here \cite{ibm-2024}.
+
+\begin{itemize}
+    \vspace{-1em}
+    \item \textbf{Subnets: } Subnets allow the division of the VPC into different IP address ranges. They can be public or private.
+    \item \textbf{Route Tables: } Route Tables allow the control of routing of traffic within the network. This helps in directing traffic between subnets, or between different VPCs.
+    \item \textbf{Internet Gateway (IGW): } The Internet Gateway can be attached to a VPC to allow communication between resources in the VPC and the internet.
+    \item \textbf{NAT Gateway: } The Network Address Translation (NAT) Gateway enables instances in a private subnet to connect to the internet or other cloud services while preventing the internet from initiating a connection with those instances.
+    \item \textbf{Security Groups / Network Access Control Lists (ACLs): } These are virtual firewalls that control ingress and egress traffic at the instance and subnet levels, providing granular security controls.
+\end{itemize}
+
+\textbf{Cloud Provider VPCs}
+\begin{itemize}
+    \vspace{-1em}
+\item AWS Cloud: AWS Virtual Private Cloud
+\item GCP: Virtual Private Cloud Network
+\item Microsoft Azure: Virtual Networks
+\end{itemize}
+
+\subsubsection{Subnets}
+A subnet is a range of IP addresses in a VPC. Subnets allow us to segment the network inside the VPC to group resources and control their access to each other and to the outside world. A subnet can be thought of as a sub-network within a VPC, where resources like EC2 instances can reside \cite{cloudflare-no-date}.  
+
+\textbf{Key Features of Subnets}
+\begin{enumerate}
+    \vspace{-1em}
+\item Public and Private Subnets
+    \begin{itemize}
+    \item Public Subnets are subnets with a route to an IGW. Instances within this subnet can directly communicate with the internet, provided that they have a public IP address or an Elastic IP.
+    \item Private subnets are subnets which do not have a route to an IGW. Instances in a private subnet cannot communicate with the internet directly. They can only access the internet via a NAT Gateway, or NAT instances in a public subnet.
+    \end{itemize}
+\item CIDR Blocks (Classless Interdomain Routing)
+ \begin{itemize}
+    \item Each subnet is associated with a CIDR block that defines its IP address range. CIDR blocks of subnets are always within (longer prefix mask) the CIDR block of the VPC.
+\end{itemize}
+\item Availability Zones (AZ)
+\begin{itemize}
+    \item Subnets are created within a specific AZ in a region. Resources within a subnet are guaranteed to be located within the same AZ.
+    \item Distribution of subnets across multiple AZs help to increase availability and fault tolerance. 
+\end{itemize}
+\item NACLs
+\begin{itemize}
+    \item Subnets are protected using NACLs, which are stateless firewalls that operate at the subnet level. They control ingress and egress traffic to and from the subnets based on user-defined rules.  
+    
+\end{itemize}
+\end{enumerate}
+
+\subsubsection{Security Groups}
+Security groups are virtual firewalls that control inbound and outbound traffic to and from resources. Security groups are stateful, meaning that if you allow an incoming request from a particular IP address and port, the response is automatically allowed without needing a separate outbound rule. Some cloud providers such as Azure also draw a distinction between security groups which operate at the application layer (operating on compute instances and services), as well as the network layer (operating on ingress and egress IP addresses and protocols) \cite{aws-no-dateD}.
+
+\subsubsection{Elastic Network Interfaces (ENI)}
+An ENI is a logical networking component in a VPC that represents a virtual network card. These ENIs are attached to instances launched in the same AZ. Every VM instance has a primary ENI attached by default, providing the instance with networking capabilities. These ENIs have multiple use cases \cite{aws-no-dateE}. Pertinent to this paper, the ENIs are used to facilitate communication between the Kubernetes control plane and worker nodes within the cluster. 
+
+\subsection{Compute Configuration}
+Once the network is setup, the next step would be to determine the relevant compute needed, and selecting the appropriate machines for use in the VPC. At this point, to support
+Kubernetes workloads, we also need to configure scaling groups, which are responsible for scaling the number of compute workers up and down depending on the load. 
+
+\subsubsection{Virtual Machines}
+Kubernetes applications that run in the cloud require compute to be done on virtual machines. Virtual machines are web services offered by cloud providers which allow users to run virtual servers in the cloud. The virtual machines are normally configurable in terms of the choice of processor, storage, networking as well as operating systems \cite{vmware-no-date}. 
+
+\textbf{Cloud Provider Virtual Machines}
+\begin{itemize}
+    \vspace{-1em}
+\item AWS Cloud: AWS Elastic Compute Cloud (EC2)
+\item GCP: Google Compute Engine (GCE)
+\item Microsoft Azure: Azure Virtual Machine (VM)
+\end{itemize}
+
+Pertinent to this paper, EC2 instances will be provisioned as nodes in the Kubernetes cluster. The Kubernetes pods are then ultimately run on these nodes.
+
+\subsubsection{Scaling Groups}
+Often times, it is important for compute instances to automatically scale with load. Scaling groups are a collection of compute instances treated as a logical grouping. Its main purpose and objective is to provide for automatic scaling and management. This allows the user to maintain the number of instances in a scaling group. The scaling group starts by launching enough instances to meet its desired capacity. It then maintains this number of instances by conducting periodic health checks on instances in the group. If an instance becomes unhealthy, the scaling group then terminates the instance and launches another instance to replace it \cite{aws-no-dateG}.  
+
+\textbf{Cloud Provider Scaling Groups}
+\begin{itemize}
+    \vspace{-1em}
+\item AWS Cloud: Auto Scaling Groups (ASG)
+\item GCP: Managed Instance Groups (MIG)
+\item Microsoft Azure: Azure Virtual Machine Scale Sets (VMSS)
+\end{itemize}
+\subsubsection {Instance Templates}
+
+Instance Templates allow users to define the configuration for launch VM instances in a more flexible and reusable way. They allow the specification of instance parameters such as instance type, key pair, security groups and more. These templates can then be used by Auto Scaling Groups, Spot Fleets, and other services to provision VM instances according to the configurations specified \cite{gcp-no-date}. 
+
+\textbf{Cloud Provider Instance Templates}
+\begin{itemize}
+    \vspace{-1em}
+\item AWS Cloud: AWS Launch Template
+\item GCP: Instance Templates
+\end{itemize}
+
+Appendix \ref{appendix:cloudformation-eks-vpc-yaml} shows an example AWS Launch Template to provision a VPC for use with Kubernetes.
+
+\subsection{Storage Configuration}
+Lastly, some applications required a mounted File System to operate. In the case of SpeechLab applications, a File System is needed in order to house the models. Once the network and compute
+configuration is done, the File System is then configured. 
+
+\subsubsection{File Systems}
+File systems provide a simple, serverless, set-and-forget elastic file system for use with cloud resources or on premise infrastructure. They are built to scale on demand to petabytes without disrupting applications, growing and shrinking automatically as files are added or removed, thereby eliminating the need to provision and manage capacity to accommodate growth \cite{aws-no-dateF}. 
+
+\textbf{Cloud Provider File Systems}
+\begin{itemize}
+    \vspace{-1em}
+\item AWS Cloud: Elastic File System (EFS)
+\item GCP: Cloud Filestore
+\item Microsoft Azure: Fileshare
+\end{itemize}
+
 
 \subsection{AWS Elastic Container Service (ECS)}
 AWS ECS is a fully managed container orchestration service that helps you to deploy, manage, and scale containerised applications. AWS ECS allows for the running and scaling of container workloads across AWS regions in the cloud, without the complexity of managing a control plane \cite{aws-ecs}. 
 
 \textbf{\textit{Workflow for Deploying a containerized application to ECS}}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/ecs-config.png}
+    \caption{Summary of configuration required for ECS}
+    \label{fig:ecs-config}
+\end{figure}
 
 \begin{enumerate}
     \vspace{-1em}
@@ -44,6 +173,12 @@ AWS ECS is a fully managed container orchestration service that helps you to dep
 \subsection{AWS Elastic Kubernetes Service (EKS)}
 With companies moving toward Kubernetes to handle increasingly complex workloads, this paper focuses on deployment of a containerised workload to Kubernetes. AWS EKS is a fully managed Kubernetes service that enables Kubernetes workloads to be run seamlessly on AWS cloud. 
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{fig/eks-config.png}
+    \caption{Summary of configuration required for EKS}
+    \label{fig:eks-config}
+\end{figure}
 \textbf{\textit{Workflow for deploying a containerised application to EKS}}
 \vspace{-1em}
 \begin{enumerate}
