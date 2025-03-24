@@ -5,8 +5,9 @@ In this chapter, we will detail the current approach taken in deploying a contai
 
 \section{Traditional Approaches}
 Within the AWS ecosystem, there are two primary services offering container orchestration solutions. They are the AWS Elastic Container Service (ECS), as well as a managed Kubernetes service, the AWS Elastic Kubernetes Service (EKS). With 96\% of companies who use containerisation in production opting for Kubernetes for container orchestration \cite{unlu-2024}, this report will mainly focus on deploying a containerized workload on Kubernetes. That said, AWS ECS will be included in our analysis for completeness. 
-Before the setup of ECS/EKS, there are 3 main steps that a developer has to take. This would be \(1\) Configuring the network, \(2\) Configuring the compute, and \(3\) Configuring the storage layer. This chapter will discuss the various configurations necessary in subsections 3.1.1 - 3.1.3. Finally, we will see how to
+Before the setup of ECS/EKS, there are 3 main steps that a developer has to take. This would be (1) Configuring the network, (2) Configuring the compute, and (3) Configuring the storage layer. This chapter will discuss the various configurations necessary in subsections 3.1.1 - 3.1.3. Finally, we will see how to
 deploy our applications to ECS in section 3.1.4, and to EKS in section 3.1.5. 
+\newpage
 
 \subsection{Network Configuration}
 The first step in deploying a containerised workload to the cloud would be to configure the network. This includes configuring VPC and Subnet settings, as well as their related Access Control Lists, Security Groups, and routing within the cloud. 
@@ -18,20 +19,11 @@ The first step in deploying a containerised workload to the cloud would be to co
     \label{fig:vpc-subnets}
 \end{figure}
 
+\textbf{Virtual Private Cloud (VPC)}
 
-\subsubsection{Virtual Private Cloud (VPC)}
-A virtual private cloud allows the creation of logically isolated sections of the cloud where different resources can be launched in a user-defined virtual network. Developers have full control over the virtual networking environment, including the selection of IP address ranges, creation of subnets, as well as configuration of route tables and network gateways. There will be mentions of some VPC related terminology in the following chapters, all of which are defined here \cite{ibm-2024}.
+A virtual private cloud allows the creation of logically isolated sections of the cloud where different resources can be launched in a user-defined virtual network. Developers have full control over the virtual networking environment, including the selection of IP address ranges, creation of subnets, as well as configuration of route tables and network gateways \cite{ibm-2024}.
 
-\begin{itemize}
-    \vspace{-1em}
-    \item \textbf{Subnets: } Subnets allow the division of the VPC into different IP address ranges. They can be public or private.
-    \item \textbf{Route Tables: } Route Tables allow the control of routing of traffic within the network. This helps in directing traffic between subnets, or between different VPCs.
-    \item \textbf{Internet Gateway (IGW): } The Internet Gateway can be attached to a VPC to allow communication between resources in the VPC and the internet.
-    \item \textbf{NAT Gateway: } The Network Address Translation (NAT) Gateway enables instances in a private subnet to connect to the internet or other cloud services while preventing the internet from initiating a connection with those instances.
-    \item \textbf{Security Groups / Network Access Control Lists (ACLs): } These are virtual firewalls that control ingress and egress traffic at the instance and subnet levels, providing granular security controls.
-\end{itemize}
-
-\textbf{Cloud Provider VPCs}
+\textit{Cloud Provider VPCs}
 \begin{itemize}
     \vspace{-1em}
 \item AWS Cloud: AWS Virtual Private Cloud
@@ -39,38 +31,34 @@ A virtual private cloud allows the creation of logically isolated sections of th
 \item Microsoft Azure: Virtual Networks
 \end{itemize}
 
-\subsubsection{Subnets}
+
+\textbf{Subnets}
+
 A subnet is a range of IP addresses in a VPC. Subnets allow us to segment the network inside the VPC to group resources and control their access to each other and to the outside world. A subnet can be thought of as a sub-network within a VPC, where resources like EC2 instances can reside \cite{cloudflare-no-date}.  
+Subnets can be public or private. Public subnets are subnets with a route to an Internet Gateway, and instances within the subnet can directly communicate with the internet if they have a public IP address.
+Private subnets on the other hand, cannot communicate with the internet directly, and can only access the internet via a NAT Gateway.
 
-\textbf{Key Features of Subnets}
-\begin{enumerate}
-    \vspace{-1em}
-\item Public and Private Subnets
-    \begin{itemize}
-    \item Public Subnets are subnets with a route to an IGW. Instances within this subnet can directly communicate with the internet, provided that they have a public IP address or an Elastic IP.
-    \item Private subnets are subnets which do not have a route to an IGW. Instances in a private subnet cannot communicate with the internet directly. They can only access the internet via a NAT Gateway, or NAT instances in a public subnet.
-    \end{itemize}
-\item CIDR Blocks (Classless Interdomain Routing)
- \begin{itemize}
-    \item Each subnet is associated with a CIDR block that defines its IP address range. CIDR blocks of subnets are always within (longer prefix mask) the CIDR block of the VPC.
-\end{itemize}
-\item Availability Zones (AZ)
-\begin{itemize}
-    \item Subnets are created within a specific AZ in a region. Resources within a subnet are guaranteed to be located within the same AZ.
-    \item Distribution of subnets across multiple AZs help to increase availability and fault tolerance. 
-\end{itemize}
-\item NACLs
-\begin{itemize}
-    \item Subnets are protected using NACLs, which are stateless firewalls that operate at the subnet level. They control ingress and egress traffic to and from the subnets based on user-defined rules.  
-    
-\end{itemize}
-\end{enumerate}
 
-\subsubsection{Security Groups}
-Security groups are virtual firewalls that control inbound and outbound traffic to and from resources. Security groups are stateful, meaning that if you allow an incoming request from a particular IP address and port, the response is automatically allowed without needing a separate outbound rule. Some cloud providers such as Azure also draw a distinction between security groups which operate at the application layer (operating on compute instances and services), as well as the network layer (operating on ingress and egress IP addresses and protocols) \cite{aws-no-dateD}.
+\textit{Fault Tolerance}
 
-\subsubsection{Elastic Network Interfaces (ENI)}
-An ENI is a logical networking component in a VPC that represents a virtual network card. These ENIs are attached to instances launched in the same AZ. Every VM instance has a primary ENI attached by default, providing the instance with networking capabilities. These ENIs have multiple use cases \cite{aws-no-dateE}. Pertinent to this paper, the ENIs are used to facilitate communication between the Kubernetes control plane and worker nodes within the cluster. 
+Subnets are typically distributed across multiple AZs to help increase availability and fault tolerance. Resources within a subnet are guaranteed to be located within the same AZ, and these settings help 
+developers have control over the physical geographical location of their data \cite{aws-no-dateH}.  
+
+\textit{Subnet Ingress and Egress Configurations}
+
+Subnets are protected using NACLs, which are stateless firewalls that operate at the subnet level. They control ingress and egress traffic to and from the subnets based on user-defined rules.  Security Groups also act as 
+virtual firewalls to control ingress and egress traffic at the instance levels, providing granular security controls. 
+
+Internet Gateways (IGW) can be also attached to a VPC to allow communication between resources in the VPC and the internet. 
+
+NAT Gateways also help to enable instances in a private subnet to connect to the internet or other cloud services while preventing the internet from initiating a connection with those instances. 
+
+\textit{Routing}
+
+Routing within the network is realised by Route Tables, which control of routing of traffic within the network. This helps in directing traffic between subnets, or between different VPCs.
+
+
+
 
 \subsection{Compute Configuration}
 Once the network is setup, the next step would be to determine the relevant compute needed, and selecting the appropriate machines for use in the VPC. At this point, to support
@@ -80,6 +68,7 @@ Kubernetes workloads, we also need to configure scaling groups, which are respon
 Kubernetes applications that run in the cloud require compute to be done on virtual machines. Virtual machines are web services offered by cloud providers which allow users to run virtual servers in the cloud. The virtual machines are normally configurable in terms of the choice of processor, storage, networking as well as operating systems \cite{vmware-no-date}. 
 
 \textbf{Cloud Provider Virtual Machines}
+
 \begin{itemize}
     \vspace{-1em}
 \item AWS Cloud: AWS Elastic Compute Cloud (EC2)
@@ -88,6 +77,11 @@ Kubernetes applications that run in the cloud require compute to be done on virt
 \end{itemize}
 
 Pertinent to this paper, EC2 instances will be provisioned as nodes in the Kubernetes cluster. The Kubernetes pods are then ultimately run on these nodes.
+
+\subsubsection{Elastic Network Interfaces (ENI)}
+An ENI is a logical networking component in a VPC that represents a virtual network card. These ENIs are attached to instances launched in the same AZ. Every VM instance has a primary ENI attached by default, providing the instance with networking capabilities. These ENIs have multiple use cases \cite{aws-no-dateE}. Pertinent to this paper, the ENIs are used to facilitate communication between the Kubernetes control plane and worker nodes within the cluster. 
+
+
 
 \subsubsection{Scaling Groups}
 Often times, it is important for compute instances to automatically scale with load. Scaling groups are a collection of compute instances treated as a logical grouping. Its main purpose and objective is to provide for automatic scaling and management. This allows the user to maintain the number of instances in a scaling group. The scaling group starts by launching enough instances to meet its desired capacity. It then maintains this number of instances by conducting periodic health checks on instances in the group. If an instance becomes unhealthy, the scaling group then terminates the instance and launches another instance to replace it \cite{aws-no-dateG}.  
@@ -161,7 +155,7 @@ AWS ECS is a fully managed container orchestration service that helps you to dep
     \end{enumerate}
 \item Preparing and pushing the container image
     \begin{enumerate}
-        \item AWS ECS task definitions used Docker images to launch containers on the container instances in the cluster. Assuming we have a ready and runnable image on our local computer, we need to push this image to a container registry. This can be something like AWS Elastic Container Registry (ECR), or Dockerhub. 
+        \item AWS ECS task definitions uses Docker images to launch containers on the container instances in the cluster. Assuming we have a ready and runnable image on our local computer, we need to push this image to a container registry. This can be something like AWS Elastic Container Registry (ECR), or Dockerhub. 
     \end{enumerate}
 \item Create a task
     \begin{enumerate}
@@ -312,7 +306,7 @@ a mapping of each component to the corresponding infrastructure provisioned.
 
 The workflow to get an up and running Kubernetes cluster on the cloud is made much more effortless with \texttt{cloudkube}.  Besides having to wait for about 10 minutes for the cluster to be provisioned, as well as some configurations for authenticating with the cloud, \texttt{cloudkube} automates the provisioning of all cloud resources at the click of a button.
 
-\textbf{Typical Workflow for Deploying an Application \texttt{cloudkube}}
+\textbf{Typical Workflow for Deploying an Application with \texttt{cloudkube}}
 \begin{enumerate}
     \item Packaging and Containerisation 
         \begin{enumerate}
@@ -360,7 +354,7 @@ As we can see from the above workflow, the chore and tedium of infrastructure pr
 
 As illustrated, the deployment process of ASR application to the cloud is greatly simplified. Furthermore, this is just an example of a deployment of an ASR application. In the implementation section, we will also see another example of deploying a more complex application with multiple pods, and services that communicate with each other.
 
-With \texttt{cloudkube}, development times are greatly decreased, and developers can focus on the application business logic rather than having to debug an obscure permission setting on the cloud, or be a master of cloud technologies. Furthermore, users are also accorded configurability of the cluster, including being able to choose their machine architecture, ingress controller, as well as the provisioning of an EFS volume for PersistentVolume objects in Kubernetes. The configuration of \texttt{cloudkube} is also a low-cost one, in that low-spec machines are chosen from the various machine images offered by AWS.
+With \texttt{cloudkube}, development times are greatly decreased, and developers can focus on the application business logic rather than having to debug an obscure permission setting on the cloud, or be a master of cloud technologies. Furthermore, users are also accorded configurability of the cluster, including being able to choose their machine architecture, ingress controller, as well as the provisioning of an EFS volume for PersistentVolume objects in Kubernetes. 
 
 \subsection{Benefits of \texttt{cloudkube}}
 By leveraging the power of IaC, \texttt{cloudkube} is able to maintain many of the guarantees and benefits that terraform provides. \texttt{cloudkube} also greatly simplifies and accelerates the provisioning of infrastructure. 
@@ -381,6 +375,7 @@ In order to meet the needs to different Kubernetes workloads, \texttt{cloudkube}
 
 \texttt{cloudkube} comes with pre-configured permissions, security groups, ACLs, and IAM Roles. Configured IAM Roles ensures that cluster nodes have sufficient permissions on AWS to communicate with each other as well as the external internet. The pre-configured security groups also ensure that traffic between different cloud components is properly configured, to allow flow of information between these components securely. Ingress and Egress resources also govern traffic into and out of the cluster, ensuring that users can reach their deployed services.
 
+\newpage
 \textbf{Built on terraform}
 
 Being one of the leaders in IaC tooling, terraform is widely used across the industry. It is both robust, and battle-tested by leading firms in the industry. \texttt{cloudkube}, being built on terraform, retains all of the benefits that terraform brings. The most notable would perhaps be the tracking of the state file (\texttt{terraform.tfstate}). Terraform uses the state to determine the changes to be made to infrastructure. This ensures that the state of the cloud is always reflected on the terraform state file. Prior to any provisioning or teardown commands in \texttt{cloudkube}, the existing cloud infrastructure is compared against the state file, and \texttt{cloudkube} fails safely if the system is in an inconsistent state. This avoids leaving dangling resources on the cloud. 

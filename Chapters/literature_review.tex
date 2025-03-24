@@ -107,10 +107,10 @@ Table \ref{tab:comparison} shows the comparison between the different IaC framew
 \section{IaC Orchestration and Frameworks}
 IaC orchestration is used to enforce good programming practices, improving code readability and quality. This provides additional structure, automation, and improves maintainability for complex infrastructure \cite{spacelift-2025}. These tools provide a significant advantage over pure Terraform by improving code readability, promoting consistency across projects, and enabling faster collaboration and development in multi-environment setups. 
 
-Several IaC orchestration tools have also been built on top of terraform, such as terragrunt and terraspace \cite{dinu-2025B}. While an IaC orchestration tool will not be used in the implementation due to the main aim of keeping cloudkube portable and easily distributable, it is important to note how these tools fit into the whole cloud ecosystem.
+Several IaC orchestration tools have also been built on top of terraform, such as terragrunt and terraspace \cite{dinu-2025B}. While an IaC orchestration tool will not be used in the implementation due to the main aim of keeping \texttt{cloudkube} portable and easily distributable, it is important to note how these tools fit into the whole cloud ecosystem.
 
 \subsection{Terragrunt}
-Terragrunt is a thin wrapper that is written on top of terraform, that provides some tooling and opinions \cite{nguyen-2020}. Terragrunt also provides a way to keep your code DRY by using the generate helper method. Terragrunt also helps in the automated creation of backends, which can be a chore if using raw terraform. Lastly, terragrunt allows for the injection of CLI hooks, allowing the utility to execute custom actions before or after terraform commands
+Terragrunt is a thin wrapper that is written on top of terraform, that provides some tooling and opinions \cite{nguyen-2020}. Terragrunt also provides a way to keep your code DRY (Don't Repeat Yourself) by using the generate helper method. Terragrunt also helps in the automated creation of backends, which can be a chore if using raw terraform. Lastly, terragrunt allows for the injection of CLI hooks, allowing the utility to execute custom actions before or after terraform commands.
 
 \subsection{Terraspace}
 Terraspace is a framework, which allows developer to dynamically generate terraform project in a centralized manner \cite{nguyen-no-date}. It is highly opinionated, and strongly enforces modularity and DRYness through stacks. On top of all the benefits offered by terragrunt, terraspace also allows the easy segregation of development and high-level environments through terraspace layering, which allows for the usage of the same code to deploy and create multiple environments. 
@@ -120,7 +120,7 @@ Terraspace is a framework, which allows developer to dynamically generate terraf
 
 \section{Container and Container Orchestration}
 Containerisation has become the standard practice of the industry today. Allowing for quicker software development cycles, together with more efficient CI/CD practices and portability, containerisation provides us a powerful, and agile way to manage our applications \cite{rgs-2023}. Along with the growing complexity of distributed systems, container orchestration software such as Kubernetes are also used to automate deployment, handle scalability and fault tolerance, as well as efficient resource utilization.
-This chapter will discuss some of the common container and container orchestration software, which are pertinent to this project given that most SpeechLab applications have been containerised for the cloud
+This chapter will discuss some of the common container and container orchestration software, which are pertinent to this project given that most SpeechLab applications have been containerised for the cloud.
 
 \subsection{Docker}
 Docker is a containerisation software which aids in development, shipping, and deployment. Docker enables the separation of application from infrastructure so that software can be delivered quickly and reliably \cite{docker-docs-2024}. With docker, code, as well as version-locked dependencies are baked into a container image. This means that anyone building from this image on any machine in the world, regardless of architecture, will build the same thing, and run the same application. This creates reproducible environments of an application based on a single Docker Image. 
@@ -190,7 +190,7 @@ Lastly, this section will detail how Kubernetes handles ephemeral and persistent
     \item \textbf{Persistent Volume Claims (PVC): } A Persistent Volume Claim is a request for storage by a user. PVCs consume PV resources, and have defined access modes, such as ReadWriteOnce, ReadOnlyMany, ReadWriteMany, or ReadWriteOncePod. 
 \end{enumerate}
 
-\subsection{Managed Kubernetes Service}
+\subsection{Managed Kubernetes Services}
 
 Managed Kubernetes Services are services offered by cloud providers which can be used to run Kubernetes without needing to install, operate, and maintain your own Kubernetes control plane or nodes. The managed Kubernetes service is able to automatically scale control plane instances based on load, detect and replace unhealthy control plane instances, and provide automated version updates and patching for them. These managed service also often offer easy integrability with other cloud services such as file systems for persistent volume storage, and load balancing for load distribution \cite{sujatha-no-date}.
 
@@ -327,7 +327,7 @@ Managed Kubernetes Services are services offered by cloud providers which can be
 % \end{itemize}
 
 
-minikube is a way for one to quickly set up a local Kubernetes cluster. It is compatible with macOS, Linux and Windows. The main goal of minikube is to help application developers do quick testing of their Kubernetes deployments locally, as well as a tool used for learning by new Kubernetes users \cite{minikube-docs}. By default, minikube creates a one-node cluster locally, and supports addons such as ingress controllers. As we will see in the following chapter, cloudkube functionality closely mirrors that of minikube, supporting the objective of cloudkube which is to provide a quick and easy testing environment for Kubernetes developers in the cloud. The added benefit, and problem that 
+minikube is a way for one to quickly set up a local Kubernetes cluster. It is compatible with macOS, Linux and Windows. The main goal of minikube is to help application developers do quick testing of their Kubernetes deployments locally, as well as a tool used for learning by new Kubernetes users \cite{minikube-docs}. By default, minikube creates a one-node cluster locally, and supports addons such as ingress controllers. As we will see in the following chapter, \texttt{cloudkube} functionality closely mirrors that of minikube, supporting the objective of \texttt{cloudkube} which is to provide a quick and easy testing environment for Kubernetes developers in the cloud. The added benefit, and problem that 
 \texttt{cloudkube} solves over minikube is the ability for a Kubernetes cluster to be spun up in the cloud, rather than on a single node environment locally. This can help developers do more robust testing of their applications, and provide DevOps engineers a better testing framework for shipping applicaitons. 
 
 \section{Past FYPs}

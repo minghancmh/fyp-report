@@ -93,7 +93,7 @@ First, \texttt{cloudkube} is downloaded via \texttt{pip install cloudkube}. We t
 are omitted form this report to keep the aws credentials secret. 
 Next, based on the Kubernetes manifest of the SpeechLab ASR Application (Appendix \ref{appendix:asr-archi}), we see that persistent volumes are required. 
 The ASR application also runs on \texttt{x86} architecture as dictated by the decoding-sdk.
-\texttt{cloudkube init} is then run, and \texttt{cloudkube} is configured (via option \texttt{2}) with \texttt{x86} machines, and PersistentVolume setup \ref{fig:cloudkube-init-2}. 
+\texttt{cloudkube init} is then run, and \texttt{cloudkube} is configured (via option \texttt{2}) with \texttt{x86} machines, and PersistentVolume setup (Figure \ref{fig:cloudkube-init-2}). 
 At this point, configuring the cluster has taken no more than 5 minutes. Next, option \texttt{3} is run, and \texttt{cloudkube} begins provisioning our Kubernetes cluster in the cloud. 
 
 \begin{figure}[h!]
@@ -105,7 +105,7 @@ At this point, configuring the cluster has taken no more than 5 minutes. Next, o
 
 The cluster creation process takes approximately 10 minutes. Once the Kubernetes cluster is successfully created (Figure \ref{fig:cloudkube-success}), we can then navigate to the Kubernetes manifests
 to run \texttt{kubectl apply -f manifest.yaml}. At this point, our application is deployed to the cloud, and ready for testing. It should be noted that the 
-images are stored on dockerhub, while the models are pulled from an S3 bucket in our AWS cloud. 
+images are stored on Dockerhub, while the models are pulled from an S3 bucket in our AWS cloud. 
 
 \begin{figure}[h!]
     \centering
@@ -202,7 +202,7 @@ The roles and responsibilities of each Kubernetes component is shown in Table \r
 \end{table}
 
 To successfully deploy this application, we need to provision an ingress controller to satisfy the ingress Kubernetes resource. Furthermore, this application 
-also runs on arm, and the architecture of the cluster must be changed. To do this, we simply edit the \texttt{config.json} file to the following. As we can see,
+also runs on \texttt{arm}, and the architecture of the cluster must be changed. To do this, we simply edit the \texttt{config.json} file to the following. As we can see,
 an nginx ingress controller has been chosen, and the architecture has changed to \texttt{arm}.
 
 \newpage

@@ -23,7 +23,7 @@ and robustness required for production grade deployments.
 \section{Objective}
 The main objective of this project was to speed up the turnaround time for deployment of new SpeechLab applications. The main idea of this tool is to abstract away in-depth knowledge of cloud technologies from researchers, and allow them to readily and easily deploy their ASR applications to the cloud at the press of a button. This will allow researchers to then concentrate their efforts on the development of the ML model in the ASR application, and not have to worry about low-level cloud implementation details such as creating a security group role to allow ingress/egress traffic, or configuring their local environment to hit the cluster.  
 
-Drawing inspiration from minikube, which is a quick way to spin up a local cluster, for this FYP, I have decided to build cloudkube, which quickly spins up a Kubernetes cluster in the  cloud. Users then have a simple barebones Kubernetes cluster hosted in the cloud where they can do dev testing. 
+Drawing inspiration from minikube, which is a quick way to spin up a local cluster, for this FYP, I have decided to build \texttt{cloudkube}, which quickly spins up a Kubernetes cluster in the  cloud. Users then have a simple barebones Kubernetes cluster hosted in the cloud where they can do dev testing. 
 
 The functional requirements for this project are detailed as follows:
 \vspace{-1em} % Adjust vertical space here
@@ -49,7 +49,7 @@ The non-functional requirements for this project are detailed as follows:
 
 \section{Project Scope}
 
-The scope of this project is focused on building a minimum viable project for cloudkube, to provision infrastructure for hosting applications in a Kubernetes environment in the cloud. cloudkube aims to simplify the development process by automatic infrastructure provisioning, Kubernetes cluster setup, cloud configuration, as well as application deployment. While the potential of cloudkube is massive, with possibilities for features such as multi-cloud support, advanced monitoring integrations, extensibility of modules and an infrastructure templates, the scope of this project has been deliberately constrained due to the time frame of this FYP.  
+The scope of this project is focused on building a minimum viable project for \texttt{cloudkube}, to provision infrastructure for hosting applications in a Kubernetes environment in the cloud. \texttt{cloudkube} aims to simplify the development process by automatic infrastructure provisioning, Kubernetes cluster setup, cloud configuration, as well as application deployment. While the potential of \texttt{cloudkube} is massive, with possibilities for features such as multi-cloud support, advanced monitoring integrations, extensibility of modules and infrastructure templates, the scope of this project has been deliberately constrained due to the time frame of this FYP.  
 
 Given the limited time frame, this project focuses on delivering core functionalities, which are as follows:
 
@@ -79,7 +79,7 @@ types of Kubernetes workloads.
 \textbf{Contributions toward Infrastructure Provisioning Workflow}
 \vspace{-1em}
 \begin{enumerate}[label=\alph*., itemsep=0pt]
-    \item \textbf{Optimized the workflow for creating Kubernetes clusters in the cloud:} In order to facilitate creating Kubernetes clusters in the cloud, I developed the \texttt{cloudkube} CLI tool to automate the provisioning of Kubernetes clusters, as well as their corresponding dependencies in the cloud..
+    \item \textbf{Optimized the workflow for creating Kubernetes clusters in the cloud:} In order to facilitate creating Kubernetes clusters in the cloud, I developed the \texttt{cloudkube} CLI tool to automate the provisioning of Kubernetes clusters, as well as their corresponding dependencies in the cloud.
     \item \textbf{Creation of a user-friendly interface:} \texttt{cloudkube} was created with clear command structures and help options to ensure ease of use. As a tool aimed at developers who are not experts in cloud, \texttt{cloudkube} was built to abstract away in-depth cloud intricacies.
     \item \textbf{Idempotency and Atomic Provisioning:} To align with the requirements stated above, \texttt{cloudkube} was also developed with state tracking, to ensure idempotent and atomic provisioning and deprovisioning of resources to prevent resource leaks and unnecessary costs.
     \item \textbf{Easy user configurability:} After speaking to developers working on SpeechLab applications, and noting the use cases of different Kubernetes workloads, \texttt{cloudkube} provides customization options for infrastructure components such as compute instances, ingress controllers, and persistent volumes.
@@ -146,6 +146,6 @@ This report is structured into 5 different chapters, each detailing different as
 
 \textbf{Chapter 4 - Implementation: } This chapter delves into the implementation of the proposed solutions. In this chapter, I detail the code and architecture used for \texttt{cloudkube}.
 
-\textbf{Chapter 5 - Results and Analysis: } This chapter discusses the results of my proposed application, \texttt{cloudkube}. In this chapter, we will see the deployment of two applications to a Kubernetes environment provisioned by \texttt{cloudkube} - \(1\) ASR Application, and \(2\) Multi-service Kubernetes Application.
+\textbf{Chapter 5 - Results and Analysis: } This chapter discusses the results of my proposed application, \texttt{cloudkube}. In this chapter, we will see the deployment of two applications to a Kubernetes environment provisioned by \texttt{cloudkube} - (1) ASR Application, and (2) Multi-service Kubernetes Application.
 
 \textbf{Chapter 6 - Conclusion and Future Work: } This chapter presents the conclusions and recommendations for future work. 
